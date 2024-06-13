@@ -8,6 +8,8 @@ add_library(${PROJECT_NAME})
 
 target_sources(${PROJECT_NAME} PUBLIC
 
+app/ApplicationBase.cpp
+app/VulkanApplication.cpp
 
 core/logging.cpp
 core/GlslCompiler.cpp

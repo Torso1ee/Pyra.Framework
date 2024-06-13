@@ -11,11 +11,11 @@ public:
   /** @brief run app */
   void run();
 
-  virtual void preRun();
+  virtual void preRun(){}
 
-  virtual void postRun();
+  virtual void postRun(){}
 
-  virtual void internalRun();
+  virtual void internalRun(){}
 
   virtual ~ApplicationBase() {}
 };
