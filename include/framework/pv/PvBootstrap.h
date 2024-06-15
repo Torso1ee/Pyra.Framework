@@ -10,7 +10,6 @@
 #include <pv/PvCommon.h>
 #include <volk.h>
 
-
 namespace Pyra {
 
 struct PbBootstrapCreateInfo {
@@ -19,20 +18,27 @@ struct PbBootstrapCreateInfo {
   bool needSwapchain;
 };
 
+struct PvTable {
+  vkb::InstanceDispatchTable inst_disp;
+  vkb::DispatchTable disp;
+  vkb::Instance instance;
+  vkb::Device device;
+  vkb::PhysicalDevice physicalDevice;
+};
+
 class PvBootstrap {
 
 public:
   struct Init {
     std::shared_ptr<WindowBase> window;
     std::shared_ptr<PvInstance> instance;
-    vkb::InstanceDispatchTable inst_disp;
     std::shared_ptr<PvPhysicalDevice> physicalDevice;
     std::shared_ptr<PvSurface> surface;
     std::shared_ptr<PvDevice> device;
     std::shared_ptr<PvDebugUtilsMessenger> messenger;
-    vkb::DispatchTable disp;
-    vkb::Swapchain swapchain;
   } init;
+
+  PvTable table;
 
   using fp_surface_construct = VkSurfaceKHR (*)(VkInstance,
                                                 std::shared_ptr<WindowBase>);
@@ -71,6 +77,7 @@ public:
 
   template <typename T, typename... T1>
   std::shared_ptr<T> make(CreateInfo<T> info, T1... args) {
+    info.table = &table;
     return std::make_shared<typename std::shared_ptr<T>>(info, args...);
   }
 

@@ -20,6 +20,8 @@ private:
   static std::shared_ptr<HandleManager> handleManager;
 };
 
+class PvTable;
+
 template <typename Handle, typename dctor> class PvResource {
 public:
   static std::unordered_map<Handle, typename function_traits<dctor>::arg_types>
@@ -28,6 +30,7 @@ public:
   Handle handle = nullptr;
 
   PvResource() { HandleManager::count += 1; }
+  
 
   ~PvResource() {
     HandleManager::count -= 1;
@@ -68,6 +71,7 @@ public:
 
 protected:
   ManageOperation manageOp;
+  PvTable* table;
 };
 
 template <typename Handle, typename dctor>

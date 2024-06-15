@@ -40,6 +40,8 @@ public:
     init(info);
   }
 
-  PvDevice(vkb::Device &);
+  void WaitIdle();
+
+  PvDevice(PvTable*);
 };
 } // namespace Pyra

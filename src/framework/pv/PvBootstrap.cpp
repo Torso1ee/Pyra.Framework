@@ -69,30 +69,29 @@ void PvBootstrap::build() {
       instance_setting(instanceBuilder);
       auto instance_rst = instanceBuilder.build();
       if (instance_rst) {
-        auto instance = instance_rst.value();
-        init.inst_disp = instance.make_table();
-        init.instance = std::make_shared<PvInstance>(instance);
-        if (instance.debug_messenger != nullptr) {
-          init.messenger = std::make_shared<PvDebugUtilsMessenger>(instance);
+        table.instance = instance_rst.value();
+        table.inst_disp = table.instance .make_table();
+        init.instance = std::make_shared<PvInstance>(&table);
+        if (table.instance .debug_messenger != nullptr) {
+          init.messenger = std::make_shared<PvDebugUtilsMessenger>(&table);
         }
-        volkLoadInstance(instance.instance);
-        vkb::PhysicalDeviceSelector selector{instance};
+        volkLoadInstance(table.instance .instance);
+        vkb::PhysicalDeviceSelector selector{table.instance };
         if (surface_construct != nullptr) {
-          auto surface = surface_construct(instance.instance, init.window);
-          init.surface = std::make_shared<PvSurface>(instance, surface);
-          auto phyDevice_rst =
-              selector.set_surface(init.surface->handle).select();
-          if (phyDevice_rst) {
-            init.physicalDevice =
-                std::make_shared<PvPhysicalDevice>(phyDevice_rst.value());
+          auto surface = surface_construct(table.instance , init.window);
+          init.surface = std::make_shared<PvSurface>(&table, surface);
+          table.physicalDevice =
+              selector.set_surface(init.surface->handle).select().value();
+          if (table.physicalDevice) {
+            init.physicalDevice = std::make_shared<PvPhysicalDevice>(&table);
             if (device_setting != nullptr) {
-              vkb::DeviceBuilder deviceBuilder{phyDevice_rst.value()};
+              vkb::DeviceBuilder deviceBuilder{table.physicalDevice};
               device_setting(deviceBuilder);
               auto device_ret = deviceBuilder.build();
               if (device_ret) {
-                auto device = device_ret.value();
-                init.device = std::make_shared<PvDevice>(device);
-                init.disp = device.make_table();
+                table.device = device_ret.value();;
+                table.disp = table.device.make_table();
+                init.device = std::make_shared<PvDevice>(&table);
               } else {
                 ERROR("device launch failed!");
               }

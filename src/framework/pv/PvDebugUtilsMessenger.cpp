@@ -27,30 +27,26 @@ void PvDebugUtilsMessengerCreateInfo::assign() {
 }
 
 bool PvDebugUtilsMessenger::init(PvDebugUtilsMessengerCreateInfo &info) {
-  VkResult result = info.bootstrap->init.inst_disp.createDebugUtilsMessengerEXT(
+  table = info.table;
+  VkResult result = table->inst_disp.createDebugUtilsMessengerEXT(
       &info.info, info.callback, &handle);
   if (result != VK_SUCCESS) {
     ERROR("Failed to create vkDebugUtilsMessengerEXT!");
     return false;
   }
   if (deconstuctor == nullptr)
-    deconstuctor =
-        info.bootstrap->init.inst_disp.fp_vkDestroyDebugUtilsMessengerEXT;
-  manage(handle,
-         std::make_tuple(info.bootstrap->init.instance->handle, handle,
-                         info.callback),
+    deconstuctor = table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT;
+  manage(handle, std::make_tuple(table->instance, handle, info.callback),
          info.operation);
   return true;
 }
 
-PvDebugUtilsMessenger::PvDebugUtilsMessenger(vkb::Instance &instance) {
-  handle = instance.debug_messenger;
+PvDebugUtilsMessenger::PvDebugUtilsMessenger(PvTable *t) {
+  table = t;
+  handle = t->instance.debug_messenger;
   if (deconstuctor == nullptr)
-    deconstuctor = reinterpret_cast<PFN_vkDestroyDebugUtilsMessengerEXT>(
-        instance.fp_vkGetInstanceProcAddr(instance.instance,
-                                          "vkDestroyDebugUtilsMessengerEXT"));
-  manage(handle, std::make_tuple(instance.instance, handle, nullptr),
-         AUTO_MANAGE);
+    deconstuctor = table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT;
+  manage(handle, std::make_tuple(t->instance, handle, t->instance.allocation_callbacks), AUTO_MANAGE);
 }
 
 } // namespace Pyra

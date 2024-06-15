@@ -1,5 +1,6 @@
 #pragma once
 #include "VkBootstrap.h"
+#include "pv/PvCommon.h"
 #define NOGDI
 #include "PvResource.h"
 #include "window/WindowBase.h"
@@ -94,6 +95,6 @@ public:
 
   PvSurface(PvSurfaceFromWindowInfo &info);
 
-  PvSurface(vkb::Instance instance, VkSurfaceKHR surface);
+  PvSurface(PvTable* table, VkSurfaceKHR surface);
 };
 } // namespace Pyra

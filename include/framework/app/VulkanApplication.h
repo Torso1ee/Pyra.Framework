@@ -18,6 +18,12 @@ protected:
 
   virtual void setUpBootstrap();
 
+  virtual bool perFrame();
+
+  void registerEvent() override;
+
+  void internalRun() override;
+
   std::shared_ptr<PvInstance> instance();
   std::shared_ptr<WindowBase> window();
   std::shared_ptr<PvPhysicalDevice> physicalDevice();

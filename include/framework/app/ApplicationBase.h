@@ -1,6 +1,7 @@
 #pragma once
-#include <memory>
 #include "window/WindowBase.h"
+#include <memory>
+
 
 namespace Pyra {
 
@@ -11,13 +12,15 @@ public:
   /** @brief run app */
   void run();
 
-  virtual void preRun(){}
+  virtual void preRun() {}
 
-  virtual void postRun(){}
+  virtual void postRun() {}
 
-  virtual void internalRun(){}
+  virtual void internalRun() {}
+  
+  virtual void registerEvent() {}
 
   virtual ~ApplicationBase() {}
 };
 
-}
+} // namespace Pyra

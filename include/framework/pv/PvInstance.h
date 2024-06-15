@@ -39,7 +39,7 @@ public:
     init(info);
   }
 
-  PvInstance(vkb::Instance &);
+  PvInstance(PvTable*);
 };
 
 } // namespace Pyra

@@ -12,7 +12,9 @@ public:
   /** @brief Physical device representation */
   VkPhysicalDevice handle;
 
-  PvPhysicalDevice(VkPhysicalDevice physicalDevice);
+  PvTable* table;
+
+  PvPhysicalDevice(PvTable* t);
 
 };
 

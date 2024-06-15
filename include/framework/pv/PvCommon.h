@@ -62,6 +62,7 @@ enum ManageOperation {
 };
 
 class PvBootstrap;
+class PvTable;
 template <typename T, typename Derived> struct PvInfo {
   ManageOperation operation = AUTO_MANAGE;
   VkAllocationCallbacks *callback = nullptr;
@@ -74,7 +75,7 @@ protected:
   T info;
 
 private:
-  PvBootstrap * bootstrap;
+  PvTable * table;
 
   void init() {
     auto p = static_cast<CreateInfo<Derived> *>(this);

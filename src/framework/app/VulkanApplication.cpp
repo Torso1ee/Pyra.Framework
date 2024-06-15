@@ -53,15 +53,14 @@ std::shared_ptr<WindowBase> VulkanApplication::window(){
 std::shared_ptr<PvPhysicalDevice> VulkanApplication::physicalDevice(){
     REPORT_COMPONENT(physicalDevice)}
 
-std::shared_ptr<PvDevice> VulkanApplication::device(){
-    REPORT_COMPONENT(device)}
+std::shared_ptr<PvDevice> VulkanApplication::device(){REPORT_COMPONENT(device)}
 
 std::shared_ptr<PvSurface> VulkanApplication::surface(){
     REPORT_COMPONENT(surface)}
 
 vkb::InstanceDispatchTable &VulkanApplication::vk() {
-  if (bootstrap.init.inst_disp.is_populated())
-    return bootstrap.init.inst_disp;
+  if (bootstrap.table.inst_disp.is_populated())
+    return bootstrap.table.inst_disp;
   else {
     auto message = "instance function set up failed!";
     ERROR(message)
@@ -70,13 +69,27 @@ vkb::InstanceDispatchTable &VulkanApplication::vk() {
 }
 
 vkb::DispatchTable VulkanApplication::vkd() {
-
-  if (bootstrap.init.disp.is_populated())
-    return bootstrap.init.disp;
+  if (bootstrap.table.disp.is_populated())
+    return bootstrap.table.disp;
   else {
     auto message = "device function set up failed!";
     ERROR(message)
     throw std::runtime_error(message);
   }
 }
+
+void VulkanApplication::registerEvent() {}
+
+bool VulkanApplication::perFrame() {return true;}
+
+void VulkanApplication::internalRun() {
+  if (device() != nullptr && window() != nullptr) {
+    while (!window()->shouldClose()) {
+      window()->pollEvent();
+      perFrame();
+    }
+    device()->WaitIdle();
+  }
+}
+
 } // namespace Pyra

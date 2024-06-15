@@ -1,29 +1,31 @@
 #include "pv/PvSurface.h"
-#include "pv/PvCommon.h"
 #include "pv/PvBootstrap.h"
+#include "pv/PvCommon.h"
 
 namespace Pyra {
 
 PvSurface::PvSurface(PvSurfaceFromWindowInfo &info) {
-  if (!info.window->createSurface(info.bootstrap->init.instance->handle,
+  table = info.table;
+  if (!info.window->createSurface(table->instance,
                                   &handle)) {
     return;
   }
   if (deconstuctor == nullptr)
-    deconstuctor = info.bootstrap->init.inst_disp.fp_vkDestroySurfaceKHR;
+    deconstuctor = table->inst_disp.fp_vkDestroySurfaceKHR;
   manage(
       handle,
-      std::make_tuple(info.bootstrap->init.instance->handle, handle, nullptr),
+      std::make_tuple(table->instance, handle, nullptr),
       info.operation);
 }
 
-PvSurface::PvSurface(vkb::Instance instance, VkSurfaceKHR surface) {
+PvSurface::PvSurface(PvTable *t, VkSurfaceKHR surface) {
+  table = t;
   handle = surface;
   if (deconstuctor == nullptr)
-    deconstuctor = reinterpret_cast<PFN_vkDestroySurfaceKHR>(
-        instance.fp_vkGetInstanceProcAddr(instance.instance,
-                                          "vkDestroySurfaceKHR"));
-  manage(handle, std::make_tuple(instance, handle, instance.allocation_callbacks), AUTO_MANAGE);
+    deconstuctor = table->inst_disp.fp_vkDestroySurfaceKHR;
+  manage(handle,
+         std::make_tuple(t->instance, handle, t->instance.allocation_callbacks),
+         AUTO_MANAGE);
 }
 
 } // namespace Pyra

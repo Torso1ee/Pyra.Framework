@@ -19,24 +19,29 @@ void PvDeviceCreateInfo::assign() {
   };
 }
 
-PvDevice::PvDevice(vkb::Device &device) {
-  handle = device;
+PvDevice::PvDevice(PvTable *t) {
+  table = t;
+  handle = t->device;
   if (deconstuctor == nullptr)
     deconstuctor = reinterpret_cast<PFN_vkDestroyDevice>(
-        device.fp_vkGetDeviceProcAddr(device.device, "vkDestroyDevice"));
-  manage(handle, std::make_tuple(handle, device.allocation_callbacks),
+        table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice"));
+  manage(handle, std::make_tuple(handle, t->device.allocation_callbacks),
          AUTO_MANAGE);
 }
 
+void PvDevice::WaitIdle() { table->disp.deviceWaitIdle(); }
+
 bool PvDevice::init(PvDeviceCreateInfo &info) {
-  if (vkCreateDevice(info.bootstrap->init.physicalDevice->handle, &info.info,
+  table = info.table;
+  if (vkCreateDevice(info.table->physicalDevice.physical_device, &info.info,
                      info.callback, &handle) != VK_SUCCESS) {
     ERROR("Failed to create vkDevice!");
     return false;
   }
   if (deconstuctor == nullptr)
-    deconstuctor = vkDestroyDevice;
-  manage(handle, std::make_tuple(handle, info.callback), info.operation);
+    deconstuctor = reinterpret_cast<PFN_vkDestroyDevice>(
+        table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice"));
+  manage(handle, std::make_tuple(handle, table->device.allocation_callbacks), info.operation);
   return true;
 }
 

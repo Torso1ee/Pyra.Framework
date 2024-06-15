@@ -21,24 +21,23 @@ void PvInstanceCreateInfo::assign() {
                                          : nullptr};
 }
 
-PvInstance::PvInstance(vkb::Instance &instance) {
-  handle = instance.instance;
+PvInstance::PvInstance(PvTable *t) {
+  table = t;
+  handle = table->inst_disp.instance;
   if (deconstuctor == nullptr)
-    deconstuctor = reinterpret_cast<PFN_vkDestroyInstance>(
-        instance.fp_vkGetInstanceProcAddr(instance.instance,
-                                          "vkDestroyInstance"));
-  manage(handle, std::make_tuple(handle, instance.allocation_callbacks),
+    deconstuctor = table->inst_disp.fp_vkDestroyInstance;
+  manage(handle, std::make_tuple(handle, table->instance.allocation_callbacks),
          AUTO_MANAGE);
 }
 
 bool PvInstance::init(PvInstanceCreateInfo &info) {
-
   if (vkCreateInstance(&info.info, info.callback, &handle) != VK_SUCCESS) {
     ERROR("Failed to create vkInstance!");
     return false;
   }
+  table = info.table;
   if (deconstuctor == nullptr)
-    deconstuctor = vkDestroyInstance;
+    deconstuctor = table->inst_disp.fp_vkDestroyInstance;
   manage(handle, std::make_tuple(handle, info.callback), info.operation);
   return true;
 }
