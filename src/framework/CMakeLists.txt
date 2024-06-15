@@ -17,6 +17,7 @@ core/VmaUsage.cpp
 
 pv/PvBootstrap.cpp
 pv/PvResource.cpp
+pv/PvSwapchain.cpp
 pv/PvInstance.cpp
 pv/PvDebugUtilsMessenger.cpp
 pv/PvPhysicalDevice.cpp

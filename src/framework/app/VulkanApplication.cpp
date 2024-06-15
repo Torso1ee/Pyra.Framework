@@ -41,6 +41,9 @@ void VulkanApplication::setUpBootstrap() {
       .withDeviceBuilder([](auto builder) {})
       .withWindow()
       .withSurface()
+      .withSwapchainBuilder([](auto builder) {
+
+      })
       .build();
 }
 
@@ -80,7 +83,9 @@ vkb::DispatchTable VulkanApplication::vkd() {
 
 void VulkanApplication::registerEvent() {}
 
-bool VulkanApplication::perFrame() {return true;}
+void VulkanApplication::preRun() { setUpBootstrap(); }
+
+bool VulkanApplication::perFrame() { return true; }
 
 void VulkanApplication::internalRun() {
   if (device() != nullptr && window() != nullptr) {

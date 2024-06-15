@@ -21,13 +21,13 @@ void PvInstanceCreateInfo::assign() {
                                          : nullptr};
 }
 
-PvInstance::PvInstance(PvTable *t) {
+PvInstance::PvInstance(PvTable *t, ManageOperation op) {
   table = t;
   handle = table->inst_disp.instance;
   if (deconstuctor == nullptr)
     deconstuctor = table->inst_disp.fp_vkDestroyInstance;
   manage(handle, std::make_tuple(handle, table->instance.allocation_callbacks),
-         AUTO_MANAGE);
+         op);
 }
 
 bool PvInstance::init(PvInstanceCreateInfo &info) {

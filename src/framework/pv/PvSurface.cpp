@@ -18,14 +18,14 @@ PvSurface::PvSurface(PvSurfaceFromWindowInfo &info) {
       info.operation);
 }
 
-PvSurface::PvSurface(PvTable *t, VkSurfaceKHR surface) {
+PvSurface::PvSurface(PvTable *t, VkSurfaceKHR surface, ManageOperation op) {
   table = t;
   handle = surface;
   if (deconstuctor == nullptr)
     deconstuctor = table->inst_disp.fp_vkDestroySurfaceKHR;
   manage(handle,
          std::make_tuple(t->instance, handle, t->instance.allocation_callbacks),
-         AUTO_MANAGE);
+         op);
 }
 
 } // namespace Pyra

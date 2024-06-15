@@ -24,6 +24,8 @@ protected:
 
   void internalRun() override;
 
+  void preRun() override;
+
   std::shared_ptr<PvInstance> instance();
   std::shared_ptr<WindowBase> window();
   std::shared_ptr<PvPhysicalDevice> physicalDevice();
@@ -31,6 +33,7 @@ protected:
   std::shared_ptr<PvSurface> surface();
   vkb::InstanceDispatchTable &vk();
   vkb::DispatchTable vkd();
+
 };
 
 } // namespace Pyra

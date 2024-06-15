@@ -1,7 +1,6 @@
 #pragma once
 #include "PvCommon.h"
 #include "PvResource.h"
-#include "VkBootstrap.h"
 #include <sys/stat.h>
 #include <vector>
 #include <volk.h>
@@ -39,7 +38,7 @@ public:
     init(info);
   }
 
-  PvInstance(PvTable*);
+  PvInstance(PvTable*,ManageOperation op = AUTO_MANAGE);
 };
 
 } // namespace Pyra

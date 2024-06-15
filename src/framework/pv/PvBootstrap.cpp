@@ -5,6 +5,7 @@
 #include "pv/PvDevice.h"
 #include "pv/PvPhysicalDevice.h"
 #include "pv/PvSurface.h"
+#include "pv/PvSwapchain.h"
 #include "pv/pvInstance.h"
 #include "window/GlfwWindow.h"
 #include <memory>
@@ -53,7 +54,7 @@ PvBootstrap::withDeviceBuilder(PvBootstrap::fp_device_setting builder) {
 }
 
 PvBootstrap &
-PvBootstrap::withSwapchainBuilder(PvBootstrap::fp_swapchain_setting &builder) {
+PvBootstrap::withSwapchainBuilder(PvBootstrap::fp_swapchain_setting builder) {
   swapchain_setting = builder;
   return *this;
 }
@@ -70,15 +71,15 @@ void PvBootstrap::build() {
       auto instance_rst = instanceBuilder.build();
       if (instance_rst) {
         table.instance = instance_rst.value();
-        table.inst_disp = table.instance .make_table();
+        table.inst_disp = table.instance.make_table();
         init.instance = std::make_shared<PvInstance>(&table);
-        if (table.instance .debug_messenger != nullptr) {
+        if (table.instance.debug_messenger != nullptr) {
           init.messenger = std::make_shared<PvDebugUtilsMessenger>(&table);
         }
-        volkLoadInstance(table.instance .instance);
-        vkb::PhysicalDeviceSelector selector{table.instance };
+        volkLoadInstance(table.instance.instance);
+        vkb::PhysicalDeviceSelector selector{table.instance};
         if (surface_construct != nullptr) {
-          auto surface = surface_construct(table.instance , init.window);
+          auto surface = surface_construct(table.instance, init.window);
           init.surface = std::make_shared<PvSurface>(&table, surface);
           table.physicalDevice =
               selector.set_surface(init.surface->handle).select().value();
@@ -89,9 +90,13 @@ void PvBootstrap::build() {
               device_setting(deviceBuilder);
               auto device_ret = deviceBuilder.build();
               if (device_ret) {
-                table.device = device_ret.value();;
+                table.device = device_ret.value();
+                ;
                 table.disp = table.device.make_table();
                 init.device = std::make_shared<PvDevice>(&table);
+                if (swapchain_setting != nullptr) {
+                  createSwapchain();
+                }
               } else {
                 ERROR("device launch failed!");
               }
@@ -116,6 +121,18 @@ void PvBootstrap::build() {
   } else {
     ERROR("Failed to initialize volk!");
   }
+}
+
+bool PvBootstrap::createSwapchain() {
+  vkb::SwapchainBuilder swapchain_builder{table.device};
+  auto swap_ret = swapchain_builder.set_old_swapchain(table.swapchain).build();
+  if (!swap_ret) {
+    ERROR(swap_ret.error().message());
+    return false;
+  }
+  table.swapchain = swap_ret.value();
+  init.swapchain = std::make_shared<PvSwapchain>(&table);
+  return true;
 }
 
 } // namespace Pyra

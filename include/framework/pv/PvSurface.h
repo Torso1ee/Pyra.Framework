@@ -1,11 +1,10 @@
 #pragma once
-#include "VkBootstrap.h"
 #include "pv/PvCommon.h"
 #define NOGDI
 #include "PvResource.h"
 #include "window/WindowBase.h"
-#include <windows.h>
 #include <vulkan/vulkan_win32.h>
+#include <windows.h>
 
 namespace Pyra {
 
@@ -95,6 +94,7 @@ public:
 
   PvSurface(PvSurfaceFromWindowInfo &info);
 
-  PvSurface(PvTable* table, VkSurfaceKHR surface);
+  PvSurface(PvTable *table, VkSurfaceKHR surface,
+            ManageOperation op = AUTO_MANAGE);
 };
 } // namespace Pyra

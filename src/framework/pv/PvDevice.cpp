@@ -19,14 +19,14 @@ void PvDeviceCreateInfo::assign() {
   };
 }
 
-PvDevice::PvDevice(PvTable *t) {
+PvDevice::PvDevice(PvTable *t, ManageOperation op) {
   table = t;
   handle = t->device;
   if (deconstuctor == nullptr)
     deconstuctor = reinterpret_cast<PFN_vkDestroyDevice>(
         table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice"));
   manage(handle, std::make_tuple(handle, t->device.allocation_callbacks),
-         AUTO_MANAGE);
+         op);
 }
 
 void PvDevice::WaitIdle() { table->disp.deviceWaitIdle(); }

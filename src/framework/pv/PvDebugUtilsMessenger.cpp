@@ -41,12 +41,12 @@ bool PvDebugUtilsMessenger::init(PvDebugUtilsMessengerCreateInfo &info) {
   return true;
 }
 
-PvDebugUtilsMessenger::PvDebugUtilsMessenger(PvTable *t) {
+PvDebugUtilsMessenger::PvDebugUtilsMessenger(PvTable *t, ManageOperation op) {
   table = t;
   handle = t->instance.debug_messenger;
   if (deconstuctor == nullptr)
     deconstuctor = table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT;
-  manage(handle, std::make_tuple(t->instance, handle, t->instance.allocation_callbacks), AUTO_MANAGE);
+  manage(handle, std::make_tuple(t->instance, handle, t->instance.allocation_callbacks), op);
 }
 
 } // namespace Pyra

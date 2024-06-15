@@ -1,62 +1,36 @@
 #pragma once
 #define NOMINMAX
 #include "core/Event.h"
-#include <cstdint>
-#include <vulkan/vulkan_core.h>
+#include "core/controlStruct.h"
+#include <volk.h>
 namespace Pyra {
 
-	struct Extent {
-		uint32_t width;
-		uint32_t height;
-	};
+class WindowBase {
+public:
+  Event<ResizedEventArgs> resized;
+  Event<MouseEventArgs> mouseMove;
+  Event<MouseEventArgs> mouseDown;
+  Event<MouseEventArgs> mouseUp;
+  Event<MouseEventArgs> mouseEnter;
+  Event<MouseEventArgs> mouseLeave;
+  Event<MouseEventArgs> mouseScroll;
 
-	struct ResizedEventArgs {
-		uint32_t width;
-		uint32_t height;
-	};
+  MousePos curPos;
 
-	enum MouseState { Pressed, Released };
+  virtual ~WindowBase();
+  virtual void initWindow() = 0;
 
-	struct MousePos {
-		double xPos;
-		double yPos;
-	};
+  virtual bool shouldClose() = 0;
 
-	struct MouseEventArgs {
-		MousePos mousePos;
-		MousePos diff;
-		MousePos scrollOffset;
-		MouseState leftButton;
-		MouseState middleButton;
-		MouseState rightButton;
-	};
+  virtual void pollEvent() = 0;
 
-	class WindowBase {
-	public:
-		Event<ResizedEventArgs> resized;
-		Event<MouseEventArgs> mouseMove;
-		Event<MouseEventArgs> mouseDown;
-		Event<MouseEventArgs> mouseUp;
-		Event<MouseEventArgs> mouseEnter;
-		Event<MouseEventArgs> mouseLeave;
-		Event<MouseEventArgs> mouseScroll;
+  virtual void waitEvent() = 0;
 
-		MousePos curPos;
+  virtual std::vector<const char *> getRequiredExtensions() = 0;
 
-		virtual ~WindowBase();
-		virtual void initWindow() = 0;
+  virtual bool createSurface(VkInstance instance, VkSurfaceKHR *surface,
+                             VkAllocationCallbacks *callback = nullptr) = 0;
 
-		virtual bool shouldClose() = 0;
-
-		virtual void pollEvent() = 0;
-
-		virtual void waitEvent() = 0;
-
-		virtual std::vector<const char*> getRequiredExtensions() = 0;
-
-		virtual bool createSurface(VkInstance instance, VkSurfaceKHR* surface,
-			VkAllocationCallbacks* callback = nullptr) = 0;
-
-		virtual Extent getExtent() = 0;
-	};
+  virtual Extent getExtent() = 0;
+};
 } // namespace Pyra

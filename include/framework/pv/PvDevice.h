@@ -1,10 +1,8 @@
 #pragma once
-#include "VkBootstrap.h"
 #include "pv/PvCommon.h"
 #include "pv/PvResource.h"
 #include <vector>
 #include <volk.h>
-
 
 namespace Pyra {
 
@@ -42,6 +40,6 @@ public:
 
   void WaitIdle();
 
-  PvDevice(PvTable*);
+  PvDevice(PvTable *, ManageOperation op = AUTO_MANAGE);
 };
 } // namespace Pyra

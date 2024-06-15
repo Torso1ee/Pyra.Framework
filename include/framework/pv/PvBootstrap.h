@@ -3,6 +3,7 @@
 #include "pv/PvDevice.h"
 #include "pv/PvPhysicalDevice.h"
 #include "pv/PvSurface.h"
+#include "pv/PvSwapchain.h"
 #include "pv/pvInstance.h"
 #include "window/WindowBase.h"
 #include <VkBootstrap.h>
@@ -24,8 +25,10 @@ struct PvTable {
   vkb::Instance instance;
   vkb::Device device;
   vkb::PhysicalDevice physicalDevice;
+  vkb::Swapchain swapchain;
 };
 
+class VulkanApplication;
 class PvBootstrap {
 
 public:
@@ -36,6 +39,7 @@ public:
     std::shared_ptr<PvSurface> surface;
     std::shared_ptr<PvDevice> device;
     std::shared_ptr<PvDebugUtilsMessenger> messenger;
+    std::shared_ptr<PvSwapchain> swapchain;
   } init;
 
   PvTable table;
@@ -64,7 +68,7 @@ public:
 
   PvBootstrap &withDeviceBuilder(fp_device_setting setting);
 
-  PvBootstrap &withSwapchainBuilder(fp_swapchain_setting &builder);
+  PvBootstrap &withSwapchainBuilder(fp_swapchain_setting builder);
 
   template <typename Window> PvBootstrap &withWindow() {
     init.window = std::make_shared<Window>();
@@ -81,6 +85,8 @@ public:
     return std::make_shared<typename std::shared_ptr<T>>(info, args...);
   }
 
+  friend VulkanApplication;
+
 private:
   fp_surface_construct surface_construct = nullptr;
 
@@ -91,6 +97,9 @@ private:
   fp_physicalDevice_setting physicalDevice_setting = nullptr;
 
   fp_swapchain_setting swapchain_setting = nullptr;
+
+  bool createSwapchain();
+  
 };
 
 } // namespace Pyra

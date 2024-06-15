@@ -1,4 +1,5 @@
 #include "pv/PvResource.h"
+#include "vulkan/vulkan_core.h"
 
 namespace Pyra {
 
@@ -30,8 +31,8 @@ void HandleManager::HandleManager::release() {
   //   PFN_vkDestroyPipelineCache>::releaseAll(); VulkanResource<VkCommandPool,
   //   PFN_vkDestroyCommandPool>::releaseAll(); VulkanResource<VkSemaphore,
   //   PFN_vkDestroySemaphore>::releaseAll(); VulkanResource<VkFence,
-  //   PFN_vkDestroyFence>::releaseAll(); VulkanResource<VkSwapchainKHR,
-  //   PFN_vkDestroySwapchainKHR>::releaseAll();
+  //   PFN_vkDestroyFence>::releaseAll();
+  PvResource<VkSwapchainKHR, PFN_vkDestroySwapchainKHR>::releaseAll();
   //   VulkanResource<VkDescriptorPool,
   //   PFN_vkDestroyDescriptorPool>::releaseAll();
   //   VulkanResource<VkDescriptorSetLayout,

@@ -54,7 +54,7 @@ public:
     init(info);
   }
 
-  PvDebugUtilsMessenger(PvTable*);
+  PvDebugUtilsMessenger(PvTable *, ManageOperation op = AUTO_MANAGE);
 };
 
 } // namespace Pyra
