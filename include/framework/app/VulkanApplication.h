@@ -11,22 +11,25 @@
 #include <memory>
 #include <vector>
 
-
 namespace Pyra {
+
+struct SwapchainData {
+  std::vector<std::shared_ptr<PvImage>> images;
+  std::vector<std::shared_ptr<PvImageView>> imageViews;
+  uint32_t activeIndex;
+};
 
 class VulkanApplication : public ApplicationBase {
 
 protected:
   PvBootstrap bootstrap = PvBootstrap{};
-  std::vector<std::shared_ptr<RenderContext>> renderContexts;
-
-  template <typename Context, typename... Contexts> void addContext() {
-    auto context = std::make_shared<Context>();
-    renderContexts.push_back(context);
-    addContext<Contexts...>();
-  }
+  SwapchainData swapchainData;
 
   virtual void setUpBootstrap();
+
+  virtual void recreateSwapchain();
+
+  virtual void archiveSwapchainData();
 
   virtual bool perFrame();
 

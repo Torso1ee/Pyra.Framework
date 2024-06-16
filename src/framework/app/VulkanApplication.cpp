@@ -83,7 +83,10 @@ vkb::DispatchTable VulkanApplication::vkd() {
 
 void VulkanApplication::registerEvent() {}
 
-void VulkanApplication::preRun() { setUpBootstrap(); }
+void VulkanApplication::preRun() {
+  setUpBootstrap();
+  archiveSwapchainData();
+}
 
 bool VulkanApplication::perFrame() { return true; }
 
@@ -96,5 +99,12 @@ void VulkanApplication::internalRun() {
     device()->WaitIdle();
   }
 }
+
+void VulkanApplication::recreateSwapchain() {
+  bootstrap.createSwapchain();
+  archiveSwapchainData();
+}
+
+void VulkanApplication::archiveSwapchainData() {}
 
 } // namespace Pyra

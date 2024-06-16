@@ -1,4 +1,4 @@
-
+#pragma once
 #define NOGDI
 #include "pv/PvResource.h"
 #include "vk_mem_alloc.h"
