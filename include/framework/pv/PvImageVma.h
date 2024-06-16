@@ -48,7 +48,7 @@ using PFN_vmaDestroyImage =
              VkImage VMA_NULLABLE_NON_DISPATCHABLE image,
              VmaAllocation VMA_NULLABLE allocation);
 
-class PvImageVma : public PvResource<VkImageVma, PFN_vmaDestroyImage> {
+class PvImageVma : public PvResource<VkImageVma *, PFN_vmaDestroyImage> {
 
   bool init(PvImageVmaCreateInfo &info);
 

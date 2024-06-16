@@ -27,7 +27,7 @@ void PvImageCreateInfo::assign() {
 bool PvImage::init(PvImageCreateInfo &info) {
   if (info.table->disp.createImage(&info.info, info.callback, &handle) !=
       VK_SUCCESS) {
-    ERROR("Failed to create vmaImage!");
+    ERROR("Failed to create vkImage!");
     return false;
   }
   if (deconstuctor == nullptr)

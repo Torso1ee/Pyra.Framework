@@ -25,6 +25,8 @@ pv/PvPhysicalDevice.cpp
 pv/PvDevice.cpp
 pv/PvSurface.cpp
 pv/PvImage.cpp
+pv/PvImageView.cpp
+pv/PvImageVma.cpp
 
 window/GlfwWindow.cpp
 window/WindowBase.cpp

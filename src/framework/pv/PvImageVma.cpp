@@ -24,15 +24,16 @@ void PvImageVmaCreateInfo::assign() {
 }
 
 bool PvImageVma::init(PvImageVmaCreateInfo &info) {
+  handle = new VkImageVma{};
   if (vmaCreateImage(info.table->allocator, &info.info, &info.allocInfo,
-                     &handle.image, &handle.meomry, nullptr) != VK_SUCCESS) {
+                     &handle->image, &handle->meomry, nullptr) != VK_SUCCESS) {
     ERROR("Failed to create vmaImage!");
     return false;
   }
   if (deconstuctor == nullptr)
     deconstuctor = vmaDestroyImage;
   manage(handle,
-         std::make_tuple(info.table->allocator, handle.image, handle.meomry),
+         std::make_tuple(info.table->allocator, handle->image, handle->meomry),
          info.operation);
   return true;
 }
