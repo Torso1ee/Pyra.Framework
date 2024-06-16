@@ -10,6 +10,7 @@ target_sources(${PROJECT_NAME} PUBLIC
 
 app/ApplicationBase.cpp
 app/VulkanApplication.cpp
+app/RenderContext.cpp
 
 core/logging.cpp
 core/GlslCompiler.cpp
@@ -23,6 +24,7 @@ pv/PvDebugUtilsMessenger.cpp
 pv/PvPhysicalDevice.cpp
 pv/PvDevice.cpp
 pv/PvSurface.cpp
+pv/PvImage.cpp
 
 window/GlfwWindow.cpp
 window/WindowBase.cpp
@@ -34,7 +36,7 @@ ${INCLUDE_DIR}/framework
 $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glm spdlog glfw shaderc SPIRV-Tools-opt SPIRV vk-bootstrap::vk-bootstrap volk)
+target_link_libraries(${PROJECT_NAME} PUBLIC glm spdlog glfw shaderc SPIRV-Tools-opt SPIRV vk-bootstrap::vk-bootstrap volk VulkanMemoryAllocator)
 
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

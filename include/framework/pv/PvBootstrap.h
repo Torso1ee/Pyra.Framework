@@ -10,6 +10,7 @@
 #include <memory>
 #include <pv/PvCommon.h>
 #include <volk.h>
+#include <vk_mem_alloc.h>
 
 namespace Pyra {
 
@@ -26,6 +27,7 @@ struct PvTable {
   vkb::Device device;
   vkb::PhysicalDevice physicalDevice;
   vkb::Swapchain swapchain;
+  VmaAllocator allocator;
 };
 
 class VulkanApplication;

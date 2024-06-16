@@ -19,7 +19,7 @@ void PvSwapchainCreateInfo::assign() {
           .imageUsage = imageUsage,
           .imageSharingMode = imageSharingMode,
           .queueFamilyIndexCount = (uint32_t)queueFamilyIndices.size(),
-          .pQueueFamilyIndices = queueFamilyIndices.data(),
+          .pQueueFamilyIndices = NULLPTR_IF_EMPTY(queueFamilyIndices),
           .preTransform = preTransform,
           .compositeAlpha = compositeAlpha,
           .presentMode = presentMode,
