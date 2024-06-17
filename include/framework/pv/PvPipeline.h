@@ -13,10 +13,17 @@ template <> struct CreateInfo_T<PvPipeline> {
   using type = PvGraphicsPipelineCreateInfo;
 };
 
-struct PvSpecializationInfo {
+struct PvPipelineShaderStageCreateInfo;
+struct PvSpecializationInfo : public PvInfo<VkSpecializationInfo, PvPipeline> {
   std::vector<VkSpecializationMapEntry> mapEntrys;
   size_t dataSize;
   const void *data;
+
+  friend PvInfo<VkSpecializationInfo, PvPipeline>;
+  friend PvPipelineShaderStageCreateInfo;
+
+private:
+  void assign();
 };
 
 struct PvPipelineShaderStageCreateInfo
@@ -172,7 +179,7 @@ private:
 struct PvComputePipelineCreateInfo
     : public PvInfo<VkComputePipelineCreateInfo, PvPipeline> {
   VkPipelineCreateFlags flags;
-  VkPipelineShaderStageCreateInfo stage;
+  PvPipelineShaderStageCreateInfo stage;
   VkPipelineLayout layout;
   VkPipeline basePipelineHandle;
   int32_t basePipelineIndex;

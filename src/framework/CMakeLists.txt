@@ -29,7 +29,7 @@ pv/PvImageView.cpp
 pv/PvImageVma.cpp
 pv/PvFramebuffer.cpp
 pv/PvRenderPass.cpp
-
+pv/PvPipeline.cpp
 
 window/GlfwWindow.cpp
 window/WindowBase.cpp
