@@ -90,7 +90,7 @@ public:
   template <typename T, typename... T1>
   std::shared_ptr<T> make(CreateInfo<T> info, T1... args) {
     info.table = &table;
-    return std::make_shared<typename std::shared_ptr<T>>(info, args...);
+    return std::make_shared<T>(info, args...);
   }
 
   friend VulkanApplication;

@@ -39,7 +39,7 @@ private:
 };
 
 class PvImage : public PvResource<VkImage, PFN_vkDestroyImage> {
-
+public:
   bool init(PvImageCreateInfo &info);
 
   template <typename... T> PvImage(PvImageCreateInfo &info, T... infos) {

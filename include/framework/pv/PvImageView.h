@@ -30,6 +30,7 @@ private:
 };
 
 class PvImageView : public PvResource<VkImageView, PFN_vkDestroyImageView> {
+public:
   bool init(PvImageViewCreateInfo &info);
 
   template <typename... T>

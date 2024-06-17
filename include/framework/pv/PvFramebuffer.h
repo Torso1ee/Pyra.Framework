@@ -30,7 +30,7 @@ private:
 
 class PvFramebuffer
     : public PvResource<VkFramebuffer, PFN_vkDestroyFramebuffer> {
-
+public:
   bool init(PvFramebufferCreateInfo &info);
 
   template <typename... T>
