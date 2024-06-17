@@ -1,5 +1,10 @@
 #include "app/VulkanApplication.h"
 #include "core/logging.h"
+#include "pv/PvCommon.h"
+#include "pv/PvFramebuffer.h"
+#include "pv/PvImage.h"
+#include <cstdint>
+#include <memory>
 #include <stdexcept>
 #define REPORT_COMPONENT(component)                                            \
   if (bootstrap.init.component != nullptr)                                     \
@@ -105,6 +110,35 @@ void VulkanApplication::recreateSwapchain() {
   archiveSwapchainData();
 }
 
-void VulkanApplication::archiveSwapchainData() {}
+void VulkanApplication::archiveSwapchainData() {
+  activeIndex = 0;
+  auto images = bootstrap.table.swapchain.get_images().value();
+  auto imageViews = bootstrap.table.swapchain.get_image_views().value();
+  swapchainDatas.resize(images.size());
+  for (uint32_t i = 0; i < images.size(); i++) {
+    swapchainDatas[i].image =
+        std::make_shared<PvImage>(&bootstrap.table, images[i]);
+    swapchainDatas[i].imageView =
+        std::make_shared<PvImageView>(&bootstrap.table, imageViews[i]);
+    createFramebuffer(swapchainDatas[i]);
+  }
+}
+
+void VulkanApplication::createFramebuffer(SwapchainData &data) {
+
+  VkFramebufferCreateFlags flags;
+  VkRenderPass renderPass;
+  std::vector<VkImageView> attachments;
+  uint32_t width;
+  uint32_t height;
+  uint32_t layers;
+
+  CreateInfo<PvFramebuffer> info{
+      .attachments = {data.imageView->handle},
+      .width = bootstrap.table.swapchain.extent.width,
+      .height = bootstrap.table.swapchain.extent.height,
+      .layers = 1};
+  data.framebuffer = bootstrap.make<PvFramebuffer>(info);
+}
 
 } // namespace Pyra

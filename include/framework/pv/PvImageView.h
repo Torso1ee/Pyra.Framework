@@ -1,5 +1,6 @@
 #pragma once
 #include "PvResource.h"
+#include "pv/PvCommon.h"
 #include "vulkan/vulkan_core.h"
 #include <volk.h>
 
@@ -38,7 +39,7 @@ class PvImageView : public PvResource<VkImageView, PFN_vkDestroyImageView> {
     init(info);
   }
 
-  PvImageView(PvTable *t, VkImageView v, ManageOperation op = AUTO_MANAGE);
+  PvImageView(PvTable *t, VkImageView v, ManageOperation op = MANUALLY_MANAGE);
 };
 
 } // namespace Pyra

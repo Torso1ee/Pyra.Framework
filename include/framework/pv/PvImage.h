@@ -48,7 +48,7 @@ class PvImage : public PvResource<VkImage, PFN_vkDestroyImage> {
     init(info);
   }
 
-  PvImage(PvTable *t, VkImage image, ManageOperation op = AUTO_MANAGE);
+  PvImage(PvTable *t, VkImage image, ManageOperation op = MANUALLY_MANAGE);
 };
 
 } // namespace Pyra
