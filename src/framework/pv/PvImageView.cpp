@@ -6,15 +6,6 @@
 
 namespace Pyra {
 
-VkStructureType sType;
-const void *pNext;
-VkImageViewCreateFlags flags;
-VkImage image;
-VkImageViewType viewType;
-VkFormat format;
-VkComponentMapping components;
-VkImageSubresourceRange subresourceRange;
-
 void PvImageViewCreateInfo::assign() {
   info = {.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
           .flags = flags,

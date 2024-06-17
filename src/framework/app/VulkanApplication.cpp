@@ -125,14 +125,7 @@ void VulkanApplication::archiveSwapchainData() {
 }
 
 void VulkanApplication::createFramebuffer(SwapchainData &data) {
-
-  VkFramebufferCreateFlags flags;
-  VkRenderPass renderPass;
-  std::vector<VkImageView> attachments;
-  uint32_t width;
-  uint32_t height;
-  uint32_t layers;
-
+  
   CreateInfo<PvFramebuffer> info{
       .attachments = {data.imageView->handle},
       .width = bootstrap.table.swapchain.extent.width,
