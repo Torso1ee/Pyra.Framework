@@ -27,6 +27,7 @@ pv/PvSurface.cpp
 pv/PvImage.cpp
 pv/PvImageView.cpp
 pv/PvImageVma.cpp
+pv/PvFramebuffer.cpp
 
 window/GlfwWindow.cpp
 window/WindowBase.cpp

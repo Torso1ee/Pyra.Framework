@@ -1,4 +1,3 @@
-
 #pragma once
 #include "pv/PvCommon.h"
 #include "vulkan/vulkan_core.h"
