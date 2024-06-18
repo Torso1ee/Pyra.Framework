@@ -169,9 +169,9 @@ void PvGraphicsPipelineCreateInfo::assign() {
 }
 
 void PvComputePipelineCreateInfo::assign() {
-  stage->assign();
+  stage.assign();
   info = {.flags = flags,
-          .stage = stage->info,
+          .stage = stage.info,
           .layout = layout,
           .basePipelineHandle = basePipelineHandle,
           .basePipelineIndex = basePipelineIndex};
