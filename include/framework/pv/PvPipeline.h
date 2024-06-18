@@ -1,6 +1,8 @@
 #pragma once
 #include "PvResource.h"
 #include "pv/PvCommon.h"
+#include <array>
+#include <optional>
 #include <vector>
 #include <volk.h>
 
@@ -8,6 +10,7 @@ namespace Pyra {
 
 class PvPipeline;
 struct PvGraphicsPipelineCreateInfo;
+struct PvComputePipelineCreateInfo;
 
 template <> struct CreateInfo_T<PvPipeline> {
   using type = PvGraphicsPipelineCreateInfo;
@@ -35,6 +38,8 @@ struct PvPipelineShaderStageCreateInfo
   PvSpecializationInfo specializationInfo;
 
   friend PvInfo<VkPipelineShaderStageCreateInfo, PvPipeline>;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvComputePipelineCreateInfo;
 
 private:
   void assign();
@@ -47,6 +52,7 @@ struct PvPipelineVertexInputStateCreateInfo
   std::vector<VkVertexInputAttributeDescription> vertexAttributeDescriptions;
 
   friend PvInfo<VkPipelineVertexInputStateCreateInfo, PvPipeline>;
+  friend PvGraphicsPipelineCreateInfo;
 
 private:
   void assign();
@@ -57,6 +63,8 @@ struct PvPipelineInputAssemblyStateCreateInfo
   VkPipelineInputAssemblyStateCreateFlags flags;
   VkPrimitiveTopology topology;
   VkBool32 primitiveRestartEnable;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineInputAssemblyStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -66,6 +74,8 @@ struct PvPipelineTessellationStateCreateInfo
     : public PvInfo<VkPipelineTessellationStateCreateInfo, PvPipeline> {
   VkPipelineTessellationStateCreateFlags flags;
   uint32_t patchControlPoints;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineTessellationStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -76,6 +86,8 @@ struct PvPipelineViewportStateCreateInfo
   VkPipelineViewportStateCreateFlags flags;
   std::vector<VkViewport> viewports;
   std::vector<VkRect2D> scissors;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineViewportStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -94,6 +106,8 @@ struct PvPipelineRasterizationStateCreateInfo
   float depthBiasClamp;
   float depthBiasSlopeFactor;
   float lineWidth;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineRasterizationStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -108,6 +122,8 @@ struct PvPipelineMultisampleStateCreateInfo
   std::vector<VkSampleMask> sampleMasks;
   VkBool32 alphaToCoverageEnable;
   VkBool32 alphaToOneEnable;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineMultisampleStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -125,6 +141,8 @@ struct PvPipelineDepthStencilStateCreateInfo
   VkStencilOpState back;
   float minDepthBounds;
   float maxDepthBounds;
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineDepthStencilStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -136,7 +154,10 @@ struct PvPipelineColorBlendStateCreateInfo
   VkBool32 logicOpEnable;
   VkLogicOp logicOp;
   std::vector<VkPipelineColorBlendAttachmentState> attachments;
-  float blendConstants[4];
+  std::array<float, 4> blendConstants;
+
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineColorBlendStateCreateInfo, PvPipeline>;
 
 private:
   void assign();
@@ -147,6 +168,9 @@ struct PvPipelineDynamicStateCreateInfo
   VkPipelineDynamicStateCreateFlags flags;
   std::vector<VkDynamicState> dynamicStates;
 
+  friend PvGraphicsPipelineCreateInfo;
+  friend PvInfo<VkPipelineDynamicStateCreateInfo, PvPipeline>;
+
 private:
   void assign();
 };
@@ -155,14 +179,15 @@ struct PvGraphicsPipelineCreateInfo
     : public PvInfo<VkGraphicsPipelineCreateInfo, PvPipeline> {
   VkPipelineCreateFlags flags;
   std::vector<PvPipelineShaderStageCreateInfo> stages;
-  PvPipelineVertexInputStateCreateInfo vertexInputState;
-  PvPipelineInputAssemblyStateCreateInfo inputAssemblyState;
-  PvPipelineTessellationStateCreateInfo tessellationState;
-  PvPipelineRasterizationStateCreateInfo rasterizationState;
-  PvPipelineMultisampleStateCreateInfo multisampleState;
-  PvPipelineDepthStencilStateCreateInfo depthStencilState;
-  PvPipelineColorBlendStateCreateInfo colorBlendState;
-  PvPipelineDynamicStateCreateInfo dynamicState;
+  std::optional<PvPipelineVertexInputStateCreateInfo> vertexInputState;
+  std::optional<PvPipelineInputAssemblyStateCreateInfo> inputAssemblyState;
+  std::optional<PvPipelineTessellationStateCreateInfo> tessellationState;
+  std::optional<PvPipelineViewportStateCreateInfo> viewportState;
+  std::optional<PvPipelineRasterizationStateCreateInfo> rasterizationState;
+  std::optional<PvPipelineMultisampleStateCreateInfo> multisampleState;
+  std::optional<PvPipelineDepthStencilStateCreateInfo> depthStencilState;
+  std::optional<PvPipelineColorBlendStateCreateInfo> colorBlendState;
+  std::optional<PvPipelineDynamicStateCreateInfo> dynamicState;
   VkPipelineLayout layout;
   VkRenderPass renderPass;
   uint32_t subpass;
@@ -185,7 +210,7 @@ struct PvComputePipelineCreateInfo
   int32_t basePipelineIndex;
 
   friend PvPipeline;
-  friend PvInfo<VkRenderPassCreateInfo, PvPipeline>;
+  friend PvInfo<VkComputePipelineCreateInfo, PvPipeline>;
 
 private:
   void assign();

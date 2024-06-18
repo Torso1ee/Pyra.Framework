@@ -1,6 +1,8 @@
 #include "pv/PvPipeline.h"
 #include "pv/PvCommon.h"
+#include "vulkan/vulkan_core.h"
 #include <cstdint>
+#include <vector>
 
 namespace Pyra {
 
@@ -73,6 +75,106 @@ void PvPipelineRasterizationStateCreateInfo::assign() {
           .depthBiasClamp = depthBiasClamp,
           .depthBiasSlopeFactor = depthBiasSlopeFactor,
           .lineWidth = lineWidth};
+}
+
+void PvPipelineMultisampleStateCreateInfo::assign() {
+  info = {.flags = flags,
+          .rasterizationSamples = rasterizationSamples,
+          .sampleShadingEnable = sampleShadingEnable,
+          .minSampleShading = minSampleShading,
+          .pSampleMask = NULLPTR_IF_EMPTY(sampleMasks),
+          .alphaToCoverageEnable = alphaToCoverageEnable,
+          .alphaToOneEnable = alphaToOneEnable};
+}
+
+void PvPipelineDepthStencilStateCreateInfo::assign() {
+  info = {.flags = flags,
+          .depthTestEnable = depthTestEnable,
+          .depthWriteEnable = depthWriteEnable,
+          .depthCompareOp = depthCompareOp,
+          .depthBoundsTestEnable = depthBoundsTestEnable,
+          .stencilTestEnable = stencilTestEnable,
+          .front = front,
+          .back = back,
+          .minDepthBounds = minDepthBounds,
+          .maxDepthBounds = maxDepthBounds};
+}
+
+void PvPipelineColorBlendStateCreateInfo::assign() {
+  info = {.flags = flags,
+          .logicOpEnable = logicOpEnable,
+          .logicOp = logicOp,
+          .attachmentCount = (uint32_t)attachments.size(),
+          .pAttachments = NULLPTR_IF_EMPTY(attachments),
+          .blendConstants = {blendConstants[0], blendConstants[1],
+                             blendConstants[2], blendConstants[3]}};
+}
+
+void PvPipelineDynamicStateCreateInfo::assign() {
+  info = {.flags = flags,
+          .dynamicStateCount = (uint32_t)dynamicStates.size(),
+          .pDynamicStates = NULLPTR_IF_EMPTY(dynamicStates)};
+}
+
+void PvGraphicsPipelineCreateInfo::assign() {
+  std::vector<VkPipelineShaderStageCreateInfo> sInfos{};
+  for (auto &stage : stages) {
+    stage.assign();
+    sInfos.push_back(stage.info);
+  }
+  if (vertexInputState.has_value())
+    vertexInputState->assign();
+  if (inputAssemblyState.has_value())
+    inputAssemblyState->assign();
+  if (tessellationState.has_value())
+    tessellationState->assign();
+  if (viewportState.has_value())
+    viewportState->assign();
+  if (rasterizationState.has_value())
+    rasterizationState->assign();
+  if (multisampleState.has_value())
+    multisampleState->assign();
+  if (depthStencilState.has_value())
+    depthStencilState->assign();
+  if (colorBlendState.has_value())
+    colorBlendState->assign();
+  if (dynamicState.has_value())
+    dynamicState->assign();
+  info = {
+      .flags = flags,
+      .stageCount = (uint32_t)sInfos.size(),
+      .pStages = NULLPTR_IF_EMPTY(sInfos),
+      .pVertexInputState =
+          vertexInputState.has_value() ? &vertexInputState->info : nullptr,
+      .pInputAssemblyState =
+          inputAssemblyState.has_value() ? &inputAssemblyState->info : nullptr,
+      .pTessellationState =
+          tessellationState.has_value() ? &tessellationState->info : nullptr,
+      .pViewportState =
+          viewportState.has_value() ? &viewportState->info : nullptr,
+      .pRasterizationState =
+          rasterizationState.has_value() ? &rasterizationState->info : nullptr,
+      .pMultisampleState =
+          multisampleState.has_value() ? &multisampleState->info : nullptr,
+      .pDepthStencilState =
+          depthStencilState.has_value() ? &depthStencilState->info : nullptr,
+      .pColorBlendState =
+          colorBlendState.has_value() ? &colorBlendState->info : nullptr,
+      .pDynamicState = dynamicState.has_value() ? &dynamicState->info : nullptr,
+      .layout = layout,
+      .renderPass = renderPass,
+      .subpass = subpass,
+      .basePipelineHandle = basePipelineHandle,
+      .basePipelineIndex = basePipelineIndex};
+}
+
+void PvComputePipelineCreateInfo::assign() {
+  stage->assign();
+  info = {.flags = flags,
+          .stage = stage->info,
+          .layout = layout,
+          .basePipelineHandle = basePipelineHandle,
+          .basePipelineIndex = basePipelineIndex};
 }
 
 } // namespace Pyra
