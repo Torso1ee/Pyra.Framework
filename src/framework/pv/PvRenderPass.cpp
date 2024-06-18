@@ -5,16 +5,6 @@
 
 namespace Pyra {
 
-   VkStructureType                   sType;
-    const void*                       pNext;
-    VkRenderPassCreateFlags           flags;
-    uint32_t                          attachmentCount;
-    const VkAttachmentDescription*    pAttachments;
-    uint32_t                          subpassCount;
-    const VkSubpassDescription*       pSubpasses;
-    uint32_t                          dependencyCount;
-    const VkSubpassDependency*        pDependencies;
-
 void PvRenderPassCreateInfo::assign() {
   info = {
     .flags = flags,

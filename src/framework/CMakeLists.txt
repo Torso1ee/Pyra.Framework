@@ -30,6 +30,7 @@ pv/PvImageVma.cpp
 pv/PvFramebuffer.cpp
 pv/PvRenderPass.cpp
 pv/PvPipeline.cpp
+Pv/PvPipelineCache.cpp
 
 window/GlfwWindow.cpp
 window/WindowBase.cpp

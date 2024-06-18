@@ -34,8 +34,6 @@ struct PvTable {
   VmaAllocator allocator;
 };
 
-
-
 class VulkanApplication;
 class PvBootstrap {
 
@@ -91,6 +89,11 @@ public:
   std::shared_ptr<T> make(CreateInfo<T> info, T1... args) {
     info.table = &table;
     return std::make_shared<T>(info, args...);
+  }
+
+  template <typename T> std::shared_ptr<T> make(T info) {
+    info.table = &table;
+    return std::make_shared<T>(info);
   }
 
   friend VulkanApplication;
