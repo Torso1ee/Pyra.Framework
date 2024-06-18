@@ -5,6 +5,7 @@
 #include <optional>
 #include <vector>
 #include <volk.h>
+#include <vulkan/vulkan_core.h>
 
 namespace Pyra {
 
@@ -175,6 +176,12 @@ private:
   void assign();
 };
 
+struct PvMultiGraphicsPipelineCreateInfo
+    : public PvInfo<PvPlaceHolder, PvPipeline> {
+  VkPipelineCache pipelineCache;
+  std::vector<PvGraphicsPipelineCreateInfo> graphicsPipelineCreateInfos;
+};
+
 struct PvGraphicsPipelineCreateInfo
     : public PvInfo<VkGraphicsPipelineCreateInfo, PvPipeline> {
   VkPipelineCreateFlags flags;
@@ -193,12 +200,20 @@ struct PvGraphicsPipelineCreateInfo
   uint32_t subpass;
   VkPipeline basePipelineHandle;
   int32_t basePipelineIndex;
+  VkPipelineCache pipelineCache;
 
   friend PvPipeline;
   friend PvInfo<PvGraphicsPipelineCreateInfo, PvPipeline>;
+  friend PvMultiGraphicsPipelineCreateInfo;
 
 private:
   void assign();
+};
+
+struct PvMultiComputePipelineCreateInfo
+    : public PvInfo<PvPlaceHolder, PvPipeline> {
+  VkPipelineCache pipelineCache;
+  std::vector<PvComputePipelineCreateInfo> computePipelineCreateInfos;
 };
 
 struct PvComputePipelineCreateInfo
@@ -208,6 +223,7 @@ struct PvComputePipelineCreateInfo
   VkPipelineLayout layout;
   VkPipeline basePipelineHandle;
   int32_t basePipelineIndex;
+  VkPipelineCache pipelineCache;
 
   friend PvPipeline;
   friend PvInfo<VkComputePipelineCreateInfo, PvPipeline>;
@@ -235,6 +251,14 @@ public:
     (info + ... + infos);
     init(info);
   }
+
+  bool init(PvMultiGraphicsPipelineCreateInfo &info);
+
+  PvPipeline(PvMultiGraphicsPipelineCreateInfo &info){init(info);}
+
+  bool init(PvMultiComputePipelineCreateInfo &info);
+
+  PvPipeline(PvMultiComputePipelineCreateInfo &info){init(info);}
 };
 
 } // namespace Pyra

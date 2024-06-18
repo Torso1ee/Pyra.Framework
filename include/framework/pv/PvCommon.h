@@ -9,6 +9,8 @@ template <typename T> struct CreateInfo_T {
   using type = T;
 };
 
+struct PvPlaceHolder {};
+
 template <typename T> using CreateInfo = CreateInfo_T<T>::type;
 
 struct QueueFamily {
@@ -75,7 +77,7 @@ protected:
   T info;
 
 private:
-  PvTable * table;
+  PvTable *table;
 
   void init() {
     auto p = static_cast<CreateInfo<Derived> *>(this);

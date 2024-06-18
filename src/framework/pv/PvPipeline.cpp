@@ -1,4 +1,5 @@
 #include "pv/PvPipeline.h"
+#include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
 #include "vulkan/vulkan_core.h"
 #include <cstdint>
@@ -175,6 +176,76 @@ void PvComputePipelineCreateInfo::assign() {
           .layout = layout,
           .basePipelineHandle = basePipelineHandle,
           .basePipelineIndex = basePipelineIndex};
+}
+
+bool PvPipeline::init(PvGraphicsPipelineCreateInfo &info) {
+  if (info.table->disp.createGraphicsPipelines(info.pipelineCache, 1,
+                                               &info.info, info.callback,
+                                               &handle) != VK_SUCCESS) {
+    ERROR("Failed to create vkpipeline!");
+    return false;
+  }
+  if (deconstuctor == nullptr)
+    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+  manage(handle,
+         std::make_tuple(info.table->device.device, handle, info.callback),
+         info.operation);
+  return true;
+}
+
+bool PvPipeline::init(PvComputePipelineCreateInfo &info) {
+  if (info.table->disp.createComputePipelines(info.pipelineCache, 1, &info.info,
+                                              info.callback,
+                                              &handle) != VK_SUCCESS) {
+    ERROR("Failed to create vkpipeline!");
+    return false;
+  }
+  if (deconstuctor == nullptr)
+    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+  manage(handle,
+         std::make_tuple(info.table->device.device, handle, info.callback),
+         info.operation);
+  return true;
+}
+
+bool PvPipeline::init(PvMultiGraphicsPipelineCreateInfo &info) {
+  std::vector<VkGraphicsPipelineCreateInfo> pInfos;
+  for (auto &pInfo : info.graphicsPipelineCreateInfos) {
+    pInfo.assign();
+    pInfos.push_back(pInfo.info);
+  }
+  if (info.table->disp.createGraphicsPipelines(
+          info.pipelineCache, pInfos.size(), NULLPTR_IF_EMPTY(pInfos),
+          info.callback, &handle) != VK_SUCCESS) {
+    ERROR("Failed to create vkpipeline!");
+    return false;
+  }
+  if (deconstuctor == nullptr)
+    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+  manage(handle,
+         std::make_tuple(info.table->device.device, handle, info.callback),
+         info.operation);
+  return true;
+}
+
+bool PvPipeline::init(PvMultiComputePipelineCreateInfo &info) {
+  std::vector<VkComputePipelineCreateInfo> pInfos;
+  for (auto &pInfo : info.computePipelineCreateInfos) {
+    pInfo.assign();
+    pInfos.push_back(pInfo.info);
+  }
+  if (info.table->disp.createComputePipelines(
+          info.pipelineCache, pInfos.size(), NULLPTR_IF_EMPTY(pInfos),
+          info.callback, &handle) != VK_SUCCESS) {
+    ERROR("Failed to create vkpipeline!");
+    return false;
+  }
+  if (deconstuctor == nullptr)
+    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+  manage(handle,
+         std::make_tuple(info.table->device.device, handle, info.callback),
+         info.operation);
+  return true;
 }
 
 } // namespace Pyra
