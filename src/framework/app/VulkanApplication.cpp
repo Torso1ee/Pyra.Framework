@@ -111,27 +111,20 @@ void VulkanApplication::recreateSwapchain() {
 }
 
 void VulkanApplication::archiveSwapchainData() {
-  activeIndex = 0;
   auto images = bootstrap.table.swapchain.get_images().value();
   auto imageViews = bootstrap.table.swapchain.get_image_views().value();
-  swapchainDatas.resize(images.size());
+  swapchainData.images.resize(images.size());
+  swapchainData.imageViews.resize(imageViews.size());
+  swapchainData.activeIndex = 0;
   for (uint32_t i = 0; i < images.size(); i++) {
-    swapchainDatas[i].image =
+    swapchainData.images[i] =
         std::make_shared<PvImage>(&bootstrap.table, images[i]);
-    swapchainDatas[i].imageView =
-        std::make_shared<PvImageView>(&bootstrap.table, imageViews[i]);
-    createFramebuffer(swapchainDatas[i]);
   }
-}
-
-void VulkanApplication::createFramebuffer(SwapchainData &data) {
-  
-  CreateInfo<PvFramebuffer> info{
-      .attachments = {data.imageView->handle},
-      .width = bootstrap.table.swapchain.extent.width,
-      .height = bootstrap.table.swapchain.extent.height,
-      .layers = 1};
-  data.framebuffer = bootstrap.make<PvFramebuffer>(info);
+  for (uint32_t i = 0; i < images.size(); i++) {
+    swapchainData.imageViews[i] =
+        std::make_shared<PvImageView>(&bootstrap.table, imageViews[i]);
+  }
+  swapchainData.swapchain = &bootstrap.table.swapchain;
 }
 
 } // namespace Pyra

@@ -1,5 +1,5 @@
 #pragma once
-#include "RenderContext.h"
+#include "VkBootstrap.h"
 #include "VkBootstrapDispatch.h"
 #include "app/ApplicationBase.h"
 #include "pv/PvBootstrap.h"
@@ -15,25 +15,23 @@
 namespace Pyra {
 
 struct SwapchainData {
-  std::shared_ptr<PvImage> image;
-  std::shared_ptr<PvImageView> imageView;
-  std::shared_ptr<PvFramebuffer> framebuffer;
+  std::vector<std::shared_ptr<PvImage>> images;
+  std::vector<std::shared_ptr<PvImageView>> imageViews;
+  vkb::Swapchain *swapchain;
+  uint32_t activeIndex;
 };
 
 class VulkanApplication : public ApplicationBase {
 
 protected:
   PvBootstrap bootstrap = PvBootstrap{};
-  std::vector<SwapchainData> swapchainDatas;
-  uint32_t activeIndex;
+  SwapchainData swapchainData;
 
   virtual void setUpBootstrap();
 
   virtual void recreateSwapchain();
 
   virtual void archiveSwapchainData();
-
-  virtual void createFramebuffer(SwapchainData& data);
 
   virtual bool perFrame();
 
