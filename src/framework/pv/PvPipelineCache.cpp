@@ -1,12 +1,14 @@
 #include "pv/PvPipelineCache.h"
 #include "pv/PvBootstrap.h"
+#include "vulkan/vulkan_core.h"
 
 namespace Pyra {
 
 void PvPipelineCacheCreateInfo::assign() {
-  info = {
-      .flags = flags,
-  };
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO,
+          .flags = flags,
+          .initialDataSize = initialDataSize,
+          .pInitialData = pInitialData};
 }
 
 bool PvPipelineCache::init(PvPipelineCacheCreateInfo &info) {

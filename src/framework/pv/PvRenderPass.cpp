@@ -1,20 +1,20 @@
 #include "pv/PvRenderPass.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "vulkan/vulkan_core.h"
 #include <cstdint>
 
 namespace Pyra {
 
 void PvRenderPassCreateInfo::assign() {
-  info = {
-    .flags = flags,
-    .attachmentCount = (uint32_t)attachments.size(),
-    .pAttachments = NULLPTR_IF_EMPTY(attachments),
-    .subpassCount = (uint32_t)subpasses.size(),
-    .pSubpasses = NULLPTR_IF_EMPTY(subpasses),
-    .dependencyCount = (uint32_t)dependencies.size(),
-    .pDependencies = NULLPTR_IF_EMPTY(dependencies)
-  };
+  info = {.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
+          .flags = flags,
+          .attachmentCount = (uint32_t)attachments.size(),
+          .pAttachments = NULLPTR_IF_EMPTY(attachments),
+          .subpassCount = (uint32_t)subpasses.size(),
+          .pSubpasses = NULLPTR_IF_EMPTY(subpasses),
+          .dependencyCount = (uint32_t)dependencies.size(),
+          .pDependencies = NULLPTR_IF_EMPTY(dependencies)};
 }
 
 bool PvRenderPass::init(PvRenderPassCreateInfo &info) {

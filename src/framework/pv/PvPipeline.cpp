@@ -19,6 +19,7 @@ void PvSpecializationInfo::assign() {
 void PvPipelineShaderStageCreateInfo::assign() {
   specializationInfo.assign();
   info = {
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
       .flags = flags,
       .stage = stage,
       .module = module,
@@ -27,14 +28,9 @@ void PvPipelineShaderStageCreateInfo::assign() {
   };
 }
 
-VkPipelineVertexInputStateCreateFlags flags;
-uint32_t vertexBindingDescriptionCount;
-const VkVertexInputBindingDescription *pVertexBindingDescriptions;
-uint32_t vertexAttributeDescriptionCount;
-const VkVertexInputAttributeDescription *pVertexAttributeDescriptions;
-
 void PvPipelineVertexInputStateCreateInfo::assign() {
   info = {
+      .sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,
       .flags = flags,
       .vertexBindingDescriptionCount =
           (uint32_t)vertexBindingDescriptions.size(),
@@ -47,17 +43,21 @@ void PvPipelineVertexInputStateCreateInfo::assign() {
 }
 
 void PvPipelineInputAssemblyStateCreateInfo::assign() {
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO,
+          .flags = flags,
           .topology = topology,
           .primitiveRestartEnable = primitiveRestartEnable};
 }
 
 void PvPipelineTessellationStateCreateInfo::assign() {
-  info = {.flags = flags, .patchControlPoints = patchControlPoints};
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO,
+          .flags = flags,
+          .patchControlPoints = patchControlPoints};
 }
 
 void PvPipelineViewportStateCreateInfo::assign() {
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
+          .flags = flags,
           .viewportCount = (uint32_t)viewports.size(),
           .pViewports = NULLPTR_IF_EMPTY(viewports),
           .scissorCount = (uint32_t)scissors.size(),
@@ -65,21 +65,25 @@ void PvPipelineViewportStateCreateInfo::assign() {
 }
 
 void PvPipelineRasterizationStateCreateInfo::assign() {
-  info = {.flags = flags,
-          .depthClampEnable = depthClampEnable,
-          .rasterizerDiscardEnable = rasterizerDiscardEnable,
-          .polygonMode = polygonMode,
-          .cullMode = cullMode,
-          .frontFace = frontFace,
-          .depthBiasEnable = depthBiasEnable,
-          .depthBiasConstantFactor = depthBiasConstantFactor,
-          .depthBiasClamp = depthBiasClamp,
-          .depthBiasSlopeFactor = depthBiasSlopeFactor,
-          .lineWidth = lineWidth};
+  info = {
+      .sType =
+          VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
+      .flags = flags,
+      .depthClampEnable = depthClampEnable,
+      .rasterizerDiscardEnable = rasterizerDiscardEnable,
+      .polygonMode = polygonMode,
+      .cullMode = cullMode,
+      .frontFace = frontFace,
+      .depthBiasEnable = depthBiasEnable,
+      .depthBiasConstantFactor = depthBiasConstantFactor,
+      .depthBiasClamp = depthBiasClamp,
+      .depthBiasSlopeFactor = depthBiasSlopeFactor,
+      .lineWidth = lineWidth};
 }
 
 void PvPipelineMultisampleStateCreateInfo::assign() {
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO,
+          .flags = flags,
           .rasterizationSamples = rasterizationSamples,
           .sampleShadingEnable = sampleShadingEnable,
           .minSampleShading = minSampleShading,
@@ -89,7 +93,8 @@ void PvPipelineMultisampleStateCreateInfo::assign() {
 }
 
 void PvPipelineDepthStencilStateCreateInfo::assign() {
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+          .flags = flags,
           .depthTestEnable = depthTestEnable,
           .depthWriteEnable = depthWriteEnable,
           .depthCompareOp = depthCompareOp,
@@ -102,7 +107,8 @@ void PvPipelineDepthStencilStateCreateInfo::assign() {
 }
 
 void PvPipelineColorBlendStateCreateInfo::assign() {
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO,
+          .flags = flags,
           .logicOpEnable = logicOpEnable,
           .logicOp = logicOp,
           .attachmentCount = (uint32_t)attachments.size(),
@@ -112,7 +118,8 @@ void PvPipelineColorBlendStateCreateInfo::assign() {
 }
 
 void PvPipelineDynamicStateCreateInfo::assign() {
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO,
+          .flags = flags,
           .dynamicStateCount = (uint32_t)dynamicStates.size(),
           .pDynamicStates = NULLPTR_IF_EMPTY(dynamicStates)};
 }
@@ -142,6 +149,7 @@ void PvGraphicsPipelineCreateInfo::assign() {
   if (dynamicState.has_value())
     dynamicState->assign();
   info = {
+      .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .flags = flags,
       .stageCount = (uint32_t)sInfos.size(),
       .pStages = NULLPTR_IF_EMPTY(sInfos),
@@ -171,7 +179,8 @@ void PvGraphicsPipelineCreateInfo::assign() {
 
 void PvComputePipelineCreateInfo::assign() {
   stage.assign();
-  info = {.flags = flags,
+  info = {.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO,
+          .flags = flags,
           .stage = stage.info,
           .layout = layout,
           .basePipelineHandle = basePipelineHandle,
