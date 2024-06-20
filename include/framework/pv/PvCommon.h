@@ -1,4 +1,5 @@
 #pragma once
+#define NOGDI
 #include <optional>
 #include <set>
 #include <volk.h>

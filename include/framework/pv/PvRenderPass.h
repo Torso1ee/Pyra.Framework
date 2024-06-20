@@ -1,7 +1,9 @@
 #pragma once
+#define NOGDI
 #include "PvResource.h"
 #include "pv/PvCommon.h"
 #include "vulkan/vulkan_core.h"
+#include <array>
 #include <vector>
 #include <volk.h>
 #include <vulkan/vulkan_core.h>
@@ -15,11 +17,22 @@ template <> struct CreateInfo_T<PvRenderPass> {
   using type = PvRenderPassCreateInfo;
 };
 
+struct PvSubpassDescription {
+  VkSubpassDescriptionFlags flags;
+  VkPipelineBindPoint pipelineBindPoint;
+  std::vector<VkAttachmentReference> inputAttachments;
+  std::vector<VkAttachmentReference> ColorAttachments;
+  std::vector<VkAttachmentReference> resolveAttachments;
+  std::vector<VkAttachmentReference> depthStencilAttachment;
+  std::vector<uint32_t> preserveAttachments;
+};
+
 struct PvRenderPassCreateInfo : PvInfo<VkRenderPassCreateInfo, PvRenderPass> {
-    VkRenderPassCreateFlags           flags;
-    std::vector<VkAttachmentDescription>    attachments;
-    std::vector<VkSubpassDescription>    subpasses;
-    std::vector<VkSubpassDependency>    dependencies;
+  VkRenderPassCreateFlags flags;
+  std::vector<VkAttachmentDescription> attachments;
+  std::vector<PvSubpassDescription> subpasses;
+  std::vector<VkSubpassDependency> dependencies;
+  std::vector<VkSubpassDescription> spInfos;
 
   friend PvRenderPass;
   friend PvInfo<VkRenderPassCreateInfo, PvRenderPass>;
@@ -40,5 +53,4 @@ public:
   }
 };
 
-
-}
+} // namespace Pyra

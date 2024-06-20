@@ -1,19 +1,12 @@
+#include "pv/PvImageView.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
-#include <cstdint>
 #include <volk.h>
 
 namespace Pyra {
 
 void PvImageViewCreateInfo::assign() {
-  info = {.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
-          .flags = flags,
-          .image = image,
-          .viewType = viewType,
-          .format = format,
-          .components = components,
-          .subresourceRange = subresourceRange};
+  
 }
 
 bool PvImageView::init(PvImageViewCreateInfo &info) {

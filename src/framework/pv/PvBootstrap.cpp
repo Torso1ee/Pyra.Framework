@@ -29,37 +29,37 @@ PvBootstrap::defaultSurfaceConstruct(VkInstance instance,
   return nullptr;
 }
 
-PvBootstrap &
+PvBootstrap *
 PvBootstrap::withInstanceBuilder(PvBootstrap::fp_instance_setting builder) {
   instance_setting = builder;
-  return *this;
+  return this;
 }
 
-PvBootstrap &PvBootstrap::withPhysicalDeviceSelector(
+PvBootstrap *PvBootstrap::withPhysicalDeviceSelector(
     PvBootstrap::fp_physicalDevice_setting builder) {
   physicalDevice_setting = builder;
-  return *this;
+  return this;
 }
 
-PvBootstrap &
+PvBootstrap *
 PvBootstrap::withSurface(fp_surface_construct surface_constructor) {
   surface_construct = surface_constructor;
-  return *this;
+  return this;
 }
 
-PvBootstrap &
+PvBootstrap *
 PvBootstrap::withDeviceBuilder(PvBootstrap::fp_device_setting builder) {
   device_setting = builder;
-  return *this;
+  return this;
 }
 
-PvBootstrap &
+PvBootstrap *
 PvBootstrap::withSwapchainBuilder(PvBootstrap::fp_swapchain_setting builder) {
   swapchain_setting = builder;
-  return *this;
+  return this;
 }
 
-PvBootstrap &PvBootstrap::withWindow() { return withWindow<GlfwWindow>(); }
+PvBootstrap *PvBootstrap::withWindow() { return withWindow<GlfwWindow>(); }
 
 void PvBootstrap::build() {
   if (volkInitialize() == VK_SUCCESS) {
@@ -91,7 +91,6 @@ void PvBootstrap::build() {
               auto device_ret = deviceBuilder.build();
               if (device_ret) {
                 table.device = device_ret.value();
-                ;
                 table.disp = table.device.make_table();
                 init.device = std::make_shared<PvDevice>(&table);
                 if (swapchain_setting != nullptr) {

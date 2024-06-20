@@ -1,22 +1,19 @@
 #pragma once
-#include "PvImage.h"
-#include "pv/PvDebugUtilsMessenger.h"
-#include "pv/PvDevice.h"
-#include "pv/PvImageView.h"
-#include "pv/PvPhysicalDevice.h"
-#include "pv/PvSurface.h"
-#include "pv/PvSwapchain.h"
-#include "pv/pvInstance.h"
-#include "window/WindowBase.h"
 #include <VkBootstrap.h>
-#include <cstdint>
 #include <memory>
 #include <pv/PvCommon.h>
-#include <vector>
 #include <vk_mem_alloc.h>
 #include <volk.h>
 
 namespace Pyra {
+
+class PvInstance;
+class PvPhysicalDevice;
+class PvSurface;
+class PvDevice;
+class PvSwapchain;
+class PvDebugUtilsMessenger;
+class WindowBase;
 
 struct PbBootstrapCreateInfo {
   bool needSurface;
@@ -65,23 +62,23 @@ public:
   static VkSurfaceKHR defaultSurfaceConstruct(VkInstance,
                                               std::shared_ptr<WindowBase>);
 
-  PvBootstrap &withInstanceBuilder(fp_instance_setting setting);
+  PvBootstrap *withInstanceBuilder(fp_instance_setting setting);
 
-  PvBootstrap &withPhysicalDeviceSelector(fp_physicalDevice_setting setting);
+  PvBootstrap *withPhysicalDeviceSelector(fp_physicalDevice_setting setting);
 
-  PvBootstrap &withSurface(
+  PvBootstrap *withSurface(
       fp_surface_construct surface_constructor = defaultSurfaceConstruct);
 
-  PvBootstrap &withDeviceBuilder(fp_device_setting setting);
+  PvBootstrap *withDeviceBuilder(fp_device_setting setting);
 
-  PvBootstrap &withSwapchainBuilder(fp_swapchain_setting builder);
+  PvBootstrap *withSwapchainBuilder(fp_swapchain_setting builder);
 
-  template <typename Window> PvBootstrap &withWindow() {
+  template <typename Window> PvBootstrap *withWindow() {
     init.window = std::make_shared<Window>();
-    return *this;
+    return this;
   }
 
-  PvBootstrap &withWindow();
+  PvBootstrap *withWindow();
 
   void build();
 

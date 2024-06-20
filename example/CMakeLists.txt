@@ -5,7 +5,7 @@ include(CTest)
 enable_testing()
 
 
-add_executable(${PROJECT_NAME} test.cpp)
+add_executable(${PROJECT_NAME} triangle.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC
 $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>

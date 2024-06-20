@@ -1,6 +1,6 @@
+#include "pv/PvCommon.h"
 #include "pv/PvFramebuffer.h"
 #include "pv/PvBootstrap.h"
-#include "pv/PvCommon.h"
 #include <cstdint>
 #include <volk.h>
 

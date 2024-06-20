@@ -1,7 +1,7 @@
 #pragma once
+#define NOGDI
 #include "PvResource.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
 #include <volk.h>
 
 namespace Pyra {

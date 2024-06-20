@@ -18,15 +18,16 @@ void HandleManager::HandleManager::release() {
   //   VulkanResource<VkBuffer, PFN_vkDestroyBuffer>::releaseAll();
   //   VulkanResource<VkCommandBuffer *,
   //   PFN_vkFreeCommandBuffers>::releaseAll(); VulkanResource<VkPipeline,
-  //   PFN_vkDestroyPipeline>::releaseAll(); VulkanResource<VkRenderPass,
-  //   PFN_vkDestroyRenderPass>::releaseAll(); VulkanResource<VkPipelineLayout,
-  //   PFN_vkDestroyPipelineLayout>::releaseAll();
-  //   VulkanResource<VkShaderModule, PFN_vkDestroyShaderModule>::releaseAll();
-  //   VulkanResource<VkFramebuffer, PFN_vkDestroyFramebuffer>::releaseAll();
+  //   PFN_vkDestroyPipeline>::releaseAll();
+  PvResource<VkRenderPass, PFN_vkDestroyRenderPass>::releaseAll();
+  // VulkanResource<VkPipelineLayout,
+  //    PFN_vkDestroyPipelineLayout>::releaseAll();
+  //    VulkanResource<VkShaderModule, PFN_vkDestroyShaderModule>::releaseAll();
+  PvResource<VkFramebuffer, PFN_vkDestroyFramebuffer>::releaseAll();
   //   VulkanResource<VkSampler, PFN_vkDestroySampler>::releaseAll();
-  //   VulkanResource<VkImageView, PFN_vkDestroyImageView>::releaseAll();
+  PvResource<VkImageView, PFN_vkDestroyImageView>::releaseAll();
   //   VulkanResource<VkImage, PFN_vkDestroyImage>::releaseAll();
-  //   VulkanResource<VkDeviceMemory, PFN_vkFreeMemory>::releaseAll();
+  PvResource<VkDeviceMemory, PFN_vkFreeMemory>::releaseAll();
   //   VulkanResource<VkPipelineCache,
   //   PFN_vkDestroyPipelineCache>::releaseAll(); VulkanResource<VkCommandPool,
   //   PFN_vkDestroyCommandPool>::releaseAll(); VulkanResource<VkSemaphore,
