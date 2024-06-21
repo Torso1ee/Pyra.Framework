@@ -30,6 +30,7 @@ pv/PvImageVma.cpp
 pv/PvFramebuffer.cpp
 pv/PvRenderPass.cpp
 pv/PvPipeline.cpp
+pv/PvPipelineLayout.cpp
 Pv/PvPipelineCache.cpp
 pv/PvBuffer.cpp
 pv/PvBufferVma.cpp

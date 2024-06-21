@@ -1,13 +1,15 @@
 #include "pv/PvShaderModule.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "vulkan/vulkan_core.h"
 #include <volk.h>
 
 namespace Pyra {
 
 void PvShaderModuleCreateInfo::assign() {
-  info = {.flags = flags,
-          .codeSize = codes.size(),
+  info = {.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
+          .flags = flags,
+          .codeSize = codes.size() * 4,
           .pCode = NULLPTR_IF_EMPTY(codes)};
 }
 

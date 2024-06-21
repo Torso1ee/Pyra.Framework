@@ -137,7 +137,6 @@ struct PvPipelineMultisampleStateCreateInfo
 
   friend PvGraphicsPipelineCreateInfo;
   friend PvInfo<VkPipelineMultisampleStateCreateInfo, PvPipeline>;
-  
 
 private:
   void assign();

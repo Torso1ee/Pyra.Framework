@@ -4,6 +4,7 @@
 #include "pv/PvCommon.h"
 #include "pv/PvImageView.h"
 #include "pv/PvPipeline.h"
+#include "pv/PvPipelineLayout.h"
 #include "pv/PvRenderPass.h"
 #include "pv/PvShaderModule.h"
 #include "vulkan/vulkan_core.h"
@@ -52,6 +53,8 @@ class TriangleRenderContext : public RenderContext<ContextData> {
   }
 
   void createPipeline() override {
+    CreateInfo<PvPipelineLayout> plInfo;
+    contextData.pipelineLayout = bootstrap->make<PvPipelineLayout>(plInfo);
     const char *vert =
 #include "generated/triangle.vert"
         ;
@@ -118,6 +121,7 @@ class TriangleRenderContext : public RenderContext<ContextData> {
         .dynamicState = {.dynamicStates = {VK_DYNAMIC_STATE_VIEWPORT,
                                            VK_DYNAMIC_STATE_SCISSOR},
                          .required = true},
+        .layout = contextData.pipelineLayout->handle,
         .renderPass = contextData.renderPass->handle,
         .subpass = 0,
         .basePipelineHandle = nullptr};

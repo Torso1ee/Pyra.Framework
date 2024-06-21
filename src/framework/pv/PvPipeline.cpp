@@ -65,20 +65,18 @@ void PvPipelineViewportStateCreateInfo::assign() {
 }
 
 void PvPipelineRasterizationStateCreateInfo::assign() {
-  info = {
-      .sType =
-          VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_STREAM_CREATE_INFO_EXT,
-      .flags = flags,
-      .depthClampEnable = depthClampEnable,
-      .rasterizerDiscardEnable = rasterizerDiscardEnable,
-      .polygonMode = polygonMode,
-      .cullMode = cullMode,
-      .frontFace = frontFace,
-      .depthBiasEnable = depthBiasEnable,
-      .depthBiasConstantFactor = depthBiasConstantFactor,
-      .depthBiasClamp = depthBiasClamp,
-      .depthBiasSlopeFactor = depthBiasSlopeFactor,
-      .lineWidth = lineWidth};
+  info = {.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
+          .flags = flags,
+          .depthClampEnable = depthClampEnable,
+          .rasterizerDiscardEnable = rasterizerDiscardEnable,
+          .polygonMode = polygonMode,
+          .cullMode = cullMode,
+          .frontFace = frontFace,
+          .depthBiasEnable = depthBiasEnable,
+          .depthBiasConstantFactor = depthBiasConstantFactor,
+          .depthBiasClamp = depthBiasClamp,
+          .depthBiasSlopeFactor = depthBiasSlopeFactor,
+          .lineWidth = lineWidth};
 }
 
 void PvPipelineMultisampleStateCreateInfo::assign() {
@@ -125,10 +123,8 @@ void PvPipelineDynamicStateCreateInfo::assign() {
 }
 
 void PvGraphicsPipelineCreateInfo::assign() {
-  std::vector<VkPipelineShaderStageCreateInfo> sInfos{};
   for (auto &stage : stages) {
     stage.assign();
-    sInfos.push_back(stage.info);
   }
   if (vertexInputState.required)
     vertexInputState.assign();
@@ -148,33 +144,31 @@ void PvGraphicsPipelineCreateInfo::assign() {
     colorBlendState.assign();
   if (dynamicState.required)
     dynamicState.assign();
-  info = {
-      .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
-      .flags = flags,
-      .stageCount = (uint32_t)sInfos.size(),
-      .pStages = NULLPTR_IF_EMPTY(sInfos),
-      .pVertexInputState =
-          vertexInputState.required ? &vertexInputState.info : nullptr,
-      .pInputAssemblyState =
-          inputAssemblyState.required ? &inputAssemblyState.info : nullptr,
-      .pTessellationState =
-          tessellationState.required ? &tessellationState.info : nullptr,
-      .pViewportState =
-          viewportState.required ? &viewportState.info : nullptr,
-      .pRasterizationState =
-          rasterizationState.required ? &rasterizationState.info : nullptr,
-      .pMultisampleState =
-          multisampleState.required ? &multisampleState.info : nullptr,
-      .pDepthStencilState =
-          depthStencilState.required ? &depthStencilState.info : nullptr,
-      .pColorBlendState =
-          colorBlendState.required ? &colorBlendState.info : nullptr,
-      .pDynamicState = dynamicState.required ? &dynamicState.info : nullptr,
-      .layout = layout,
-      .renderPass = renderPass,
-      .subpass = subpass,
-      .basePipelineHandle = basePipelineHandle,
-      .basePipelineIndex = basePipelineIndex};
+  info = {.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
+          .flags = flags,
+
+          .pVertexInputState =
+              vertexInputState.required ? &vertexInputState.info : nullptr,
+          .pInputAssemblyState =
+              inputAssemblyState.required ? &inputAssemblyState.info : nullptr,
+          .pTessellationState =
+              tessellationState.required ? &tessellationState.info : nullptr,
+          .pViewportState =
+              viewportState.required ? &viewportState.info : nullptr,
+          .pRasterizationState =
+              rasterizationState.required ? &rasterizationState.info : nullptr,
+          .pMultisampleState =
+              multisampleState.required ? &multisampleState.info : nullptr,
+          .pDepthStencilState =
+              depthStencilState.required ? &depthStencilState.info : nullptr,
+          .pColorBlendState =
+              colorBlendState.required ? &colorBlendState.info : nullptr,
+          .pDynamicState = dynamicState.required ? &dynamicState.info : nullptr,
+          .layout = layout,
+          .renderPass = renderPass,
+          .subpass = subpass,
+          .basePipelineHandle = basePipelineHandle,
+          .basePipelineIndex = basePipelineIndex};
 }
 
 void PvComputePipelineCreateInfo::assign() {
@@ -188,6 +182,12 @@ void PvComputePipelineCreateInfo::assign() {
 }
 
 bool PvPipeline::init(PvGraphicsPipelineCreateInfo &info) {
+  std::vector<VkPipelineShaderStageCreateInfo> sInfos{};
+  for (auto &stage : info.stages) {
+    sInfos.push_back(stage.info);
+  }
+  info.info.stageCount = (uint32_t)sInfos.size();
+  info.info.pStages = NULLPTR_IF_EMPTY(sInfos);
   if (info.table->disp.createGraphicsPipelines(info.pipelineCache, 1,
                                                &info.info, info.callback,
                                                &handle) != VK_SUCCESS) {

@@ -2,6 +2,7 @@
 #include "pv/PvCommon.h"
 #include "pv/PvFramebuffer.h"
 #include "pv/PvPipeline.h"
+#include "pv/PvPipelineLayout.h"
 #include "pv/PvRenderPass.h"
 #include <memory>
 #include <vector>
@@ -13,6 +14,7 @@ struct ContextData {
   std::vector<std::shared_ptr<PvFramebuffer>> framebuffers;
   std::shared_ptr<PvRenderPass> renderPass;
   std::shared_ptr<PvPipeline> pipeline;
+  std::shared_ptr<PvPipelineLayout> pipelineLayout;
 };
 
 class RenderContextBase {
@@ -21,7 +23,7 @@ class RenderContextBase {
   friend void updateSwapchain(void *, SwapchainData *);
 
 protected:
-  std::shared_ptr<PvBootstrap>bootstrap;
+  std::shared_ptr<PvBootstrap> bootstrap;
   SwapchainData *swapchainData;
 
   virtual void createFramebuffers() {}
@@ -40,9 +42,8 @@ private:
   void init();
 };
 
-template <typename ContextData>
-class RenderContext : public RenderContextBase{
-  protected:
+template <typename ContextData> class RenderContext : public RenderContextBase {
+protected:
   ContextData contextData;
 };
 
