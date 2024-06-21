@@ -22,7 +22,7 @@ class RenderContextBase {
 
 protected:
   std::shared_ptr<PvBootstrap>bootstrap;
-  SwapchainData *swapChainData;
+  SwapchainData *swapchainData;
 
   virtual void createFramebuffers() {}
 

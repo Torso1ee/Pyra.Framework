@@ -93,7 +93,7 @@ vkb::DispatchTable VulkanApplication::vkd() {
 void updateSwapchain(void *ptr, SwapchainData *data) {
   auto app = static_cast<VulkanApplication *>(ptr);
   for (auto &context : app->renderContexts) {
-    context->swapChainData = data;
+    context->swapchainData = data;
   }
 }
 

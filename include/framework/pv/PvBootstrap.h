@@ -4,6 +4,7 @@
 #include <pv/PvCommon.h>
 #include <vk_mem_alloc.h>
 #include <volk.h>
+#include <shaderc/shaderc.h>
 
 namespace Pyra {
 
@@ -14,6 +15,7 @@ class PvDevice;
 class PvSwapchain;
 class PvDebugUtilsMessenger;
 class WindowBase;
+class PvShaderModule;
 
 struct PbBootstrapCreateInfo {
   bool needSurface;
@@ -92,6 +94,9 @@ public:
     info.table = &table;
     return std::make_shared<T>(info);
   }
+
+  std::shared_ptr<PvShaderModule> createShaderModule(const char *code,
+                                            shaderc_shader_kind kind) ;
 
   friend VulkanApplication;
 

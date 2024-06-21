@@ -1,15 +1,19 @@
 #include "pv/PvBootstrap.h"
 #include "VkBootstrap.h"
 #include "core/logging.h"
+#include "pv/PvCommon.h"
 #include "pv/PvDebugUtilsMessenger.h"
 #include "pv/PvDevice.h"
 #include "pv/PvPhysicalDevice.h"
+#include "pv/PvShaderModule.h"
 #include "pv/PvSurface.h"
 #include "pv/PvSwapchain.h"
 #include "pv/pvInstance.h"
 #include "window/GlfwWindow.h"
 #include <memory>
+#include <vector>
 #include <volk.h>
+#include "core/GlslCompiler.h"
 
 namespace Pyra {
 
@@ -132,6 +136,13 @@ bool PvBootstrap::createSwapchain() {
   table.swapchain = swap_ret.value();
   init.swapchain = std::make_shared<PvSwapchain>(&table);
   return true;
+}
+
+std::shared_ptr<PvShaderModule> PvBootstrap::createShaderModule(const char *code,
+                                            shaderc_shader_kind kind) {
+  CreateInfo<PvShaderModule> info{};
+  GlslCompiler::Compile(code, kind, info.codes);
+  return make<PvShaderModule>(info);
 }
 
 } // namespace Pyra

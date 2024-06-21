@@ -33,6 +33,7 @@ pv/PvPipeline.cpp
 Pv/PvPipelineCache.cpp
 pv/PvBuffer.cpp
 pv/PvBufferVma.cpp
+pv/PvShaderModule.cpp
 
 
 window/GlfwWindow.cpp

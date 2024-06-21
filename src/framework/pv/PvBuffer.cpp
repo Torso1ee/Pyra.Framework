@@ -1,7 +1,6 @@
 #include "pv/PvBuffer.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
 #include <cstdint>
 #include <volk.h>
 
