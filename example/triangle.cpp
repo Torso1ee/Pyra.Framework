@@ -3,6 +3,7 @@
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
 #include "pv/PvImageView.h"
+#include "pv/PvPipeline.h"
 #include "pv/PvRenderPass.h"
 #include <memory>
 
@@ -32,20 +33,56 @@ class TriangleRenderContext : public RenderContext<ContextData> {
              .srcAccessMask = 0,
              .dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_READ_BIT |
                               VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT}}};
-    renderPass = bootstrap->make<PvRenderPass>(info);
+    contextData.renderPass = bootstrap->make<PvRenderPass>(info);
   }
 
   void createFramebuffers() override {
-    framebuffers.resize(swapChainData->images.size());
+    contextData.framebuffers.resize(swapChainData->images.size());
     for (uint32_t i = 0; i < swapChainData->images.size(); i++) {
       CreateInfo<PvFramebuffer> info{
-          .renderPass = renderPass->handle,
+          .renderPass = contextData.renderPass->handle,
           .attachments = {swapChainData->imageViews[i]->handle},
           .width = swapChainData->swapchain->extent.width,
           .height = swapChainData->swapchain->extent.height,
           .layers = 1};
-      framebuffers[i] = bootstrap->make<PvFramebuffer>(info);
+      contextData.framebuffers[i] = bootstrap->make<PvFramebuffer>(info);
     }
+  }
+
+  void createPipeline() override {
+    // TODO:shader
+    CreateInfo<PvPipeline> info{
+        .stages =
+            {
+                {.stage = VK_SHADER_STAGE_VERTEX_BIT, .name = "main"},
+                {.stage = VK_SHADER_STAGE_FRAGMENT_BIT, .name = "main"},
+            },
+        .vertexInputState = {},
+        .inputAssemblyState =
+            {
+
+            },
+        .viewportState =
+            {
+
+            },
+        .rasterizationState =
+            {
+
+            },
+        .multisampleState =
+            {
+
+            },
+        .colorBlendState = {.blendConstants = {1, 3, 4, 5}},
+        .dynamicState =
+            {
+
+            },
+        .renderPass = contextData.renderPass->handle,
+        .subpass = 0,
+        .basePipelineHandle = nullptr};
+    contextData.pipeline = bootstrap->make<PvPipeline>(info);
   }
 };
 

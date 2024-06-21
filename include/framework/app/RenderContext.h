@@ -1,6 +1,7 @@
 #pragma once
 #include "pv/PvCommon.h"
 #include "pv/PvFramebuffer.h"
+#include "pv/PvPipeline.h"
 #include "pv/PvRenderPass.h"
 #include <memory>
 #include <vector>
@@ -11,6 +12,7 @@ struct SwapchainData;
 struct ContextData {
   std::vector<std::shared_ptr<PvFramebuffer>> framebuffers;
   std::shared_ptr<PvRenderPass> renderPass;
+  std::shared_ptr<PvPipeline> pipeline;
 };
 
 class RenderContextBase {
@@ -39,6 +41,9 @@ private:
 };
 
 template <typename ContextData>
-class RenderContext : public RenderContextBase, public ContextData {};
+class RenderContext : public RenderContextBase{
+  protected:
+  ContextData contextData;
+};
 
 } // namespace Pyra

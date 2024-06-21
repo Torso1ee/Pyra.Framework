@@ -130,46 +130,46 @@ void PvGraphicsPipelineCreateInfo::assign() {
     stage.assign();
     sInfos.push_back(stage.info);
   }
-  if (vertexInputState.has_value())
-    vertexInputState->assign();
-  if (inputAssemblyState.has_value())
-    inputAssemblyState->assign();
-  if (tessellationState.has_value())
-    tessellationState->assign();
-  if (viewportState.has_value())
-    viewportState->assign();
-  if (rasterizationState.has_value())
-    rasterizationState->assign();
-  if (multisampleState.has_value())
-    multisampleState->assign();
-  if (depthStencilState.has_value())
-    depthStencilState->assign();
-  if (colorBlendState.has_value())
-    colorBlendState->assign();
-  if (dynamicState.has_value())
-    dynamicState->assign();
+  if (vertexInputState.required)
+    vertexInputState.assign();
+  if (inputAssemblyState.required)
+    inputAssemblyState.assign();
+  if (tessellationState.required)
+    tessellationState.assign();
+  if (viewportState.required)
+    viewportState.assign();
+  if (rasterizationState.required)
+    rasterizationState.assign();
+  if (multisampleState.required)
+    multisampleState.assign();
+  if (depthStencilState.required)
+    depthStencilState.assign();
+  if (colorBlendState.required)
+    colorBlendState.assign();
+  if (dynamicState.required)
+    dynamicState.assign();
   info = {
       .sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO,
       .flags = flags,
       .stageCount = (uint32_t)sInfos.size(),
       .pStages = NULLPTR_IF_EMPTY(sInfos),
       .pVertexInputState =
-          vertexInputState.has_value() ? &vertexInputState->info : nullptr,
+          vertexInputState.required ? &vertexInputState.info : nullptr,
       .pInputAssemblyState =
-          inputAssemblyState.has_value() ? &inputAssemblyState->info : nullptr,
+          inputAssemblyState.required ? &inputAssemblyState.info : nullptr,
       .pTessellationState =
-          tessellationState.has_value() ? &tessellationState->info : nullptr,
+          tessellationState.required ? &tessellationState.info : nullptr,
       .pViewportState =
-          viewportState.has_value() ? &viewportState->info : nullptr,
+          viewportState.required ? &viewportState.info : nullptr,
       .pRasterizationState =
-          rasterizationState.has_value() ? &rasterizationState->info : nullptr,
+          rasterizationState.required ? &rasterizationState.info : nullptr,
       .pMultisampleState =
-          multisampleState.has_value() ? &multisampleState->info : nullptr,
+          multisampleState.required ? &multisampleState.info : nullptr,
       .pDepthStencilState =
-          depthStencilState.has_value() ? &depthStencilState->info : nullptr,
+          depthStencilState.required ? &depthStencilState.info : nullptr,
       .pColorBlendState =
-          colorBlendState.has_value() ? &colorBlendState->info : nullptr,
-      .pDynamicState = dynamicState.has_value() ? &dynamicState->info : nullptr,
+          colorBlendState.required ? &colorBlendState.info : nullptr,
+      .pDynamicState = dynamicState.required ? &dynamicState.info : nullptr,
       .layout = layout,
       .renderPass = renderPass,
       .subpass = subpass,
