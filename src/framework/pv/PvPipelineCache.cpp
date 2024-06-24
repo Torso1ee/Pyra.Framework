@@ -12,6 +12,7 @@ void PvPipelineCacheCreateInfo::assign() {
 }
 
 bool PvPipelineCache::init(PvPipelineCacheCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createPipelineCache(&info.info, info.callback,
                                            &handle) != VK_SUCCESS) {
     ERROR("Failed to create vkpipelinecache!");

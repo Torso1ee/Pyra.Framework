@@ -17,6 +17,7 @@ void PvBufferVmaCreateInfo::assign() {
 }
 
 bool PvBufferVma::init(PvBufferVmaCreateInfo &info) {
+  table = info.table;
   handle = new VkBufferVma{};
   if (vmaCreateBuffer(info.table->allocator, &info.info, &info.allocInfo,
                       &handle->Buffer, &handle->meomry,

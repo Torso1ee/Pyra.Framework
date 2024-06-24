@@ -182,6 +182,7 @@ void PvComputePipelineCreateInfo::assign() {
 }
 
 bool PvPipeline::init(PvGraphicsPipelineCreateInfo &info) {
+  table = info.table;
   std::vector<VkPipelineShaderStageCreateInfo> sInfos{};
   for (auto &stage : info.stages) {
     sInfos.push_back(stage.info);
@@ -203,6 +204,7 @@ bool PvPipeline::init(PvGraphicsPipelineCreateInfo &info) {
 }
 
 bool PvPipeline::init(PvComputePipelineCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createComputePipelines(info.pipelineCache, 1, &info.info,
                                               info.callback,
                                               &handle) != VK_SUCCESS) {
@@ -218,6 +220,7 @@ bool PvPipeline::init(PvComputePipelineCreateInfo &info) {
 }
 
 bool PvPipeline::init(PvMultiGraphicsPipelineCreateInfo &info) {
+  table = info.table;
   std::vector<VkGraphicsPipelineCreateInfo> pInfos;
   for (auto &pInfo : info.graphicsPipelineCreateInfos) {
     pInfo.assign();
@@ -238,6 +241,7 @@ bool PvPipeline::init(PvMultiGraphicsPipelineCreateInfo &info) {
 }
 
 bool PvPipeline::init(PvMultiComputePipelineCreateInfo &info) {
+  table = info.table;
   std::vector<VkComputePipelineCreateInfo> pInfos;
   for (auto &pInfo : info.computePipelineCreateInfos) {
     pInfo.assign();

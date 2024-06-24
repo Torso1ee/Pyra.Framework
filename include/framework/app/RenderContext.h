@@ -1,4 +1,5 @@
 #pragma once
+#include "pv/PvCommandBuffers.h"
 #include "pv/PvCommon.h"
 #include "pv/PvFramebuffer.h"
 #include "pv/PvPipeline.h"
@@ -15,6 +16,7 @@ struct ContextData {
   std::shared_ptr<PvRenderPass> renderPass;
   std::shared_ptr<PvPipeline> pipeline;
   std::shared_ptr<PvPipelineLayout> pipelineLayout;
+  std::shared_ptr<PvCommandBuffers> commandBuffers;
 };
 
 class RenderContextBase {

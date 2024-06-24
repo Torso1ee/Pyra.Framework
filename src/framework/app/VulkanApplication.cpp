@@ -2,6 +2,8 @@
 #include "app/RenderContext.h"
 #include "core/logging.h"
 #include "pv/PvBootstrap.h"
+#include "pv/PvCommandBuffers.h"
+#include "pv/PvCommandPool.h"
 #include "pv/PvCommon.h"
 #include "pv/PvDevice.h"
 #include "pv/PvImage.h"
@@ -132,15 +134,35 @@ void VulkanApplication::getQueue() {
   if (!gq.has_value()) {
     ERROR("failed to get graphics queue");
     throw std::runtime_error("failed to get graphics queue");
-  } else
-    queues.graphics = gq.value();
+  }
 
   auto pq = bootstrap->table.device.get_queue(vkb::QueueType::present);
   if (!pq.has_value()) {
     ERROR("failed to get present queue");
     throw std::runtime_error("failed to get present queue");
-  } else
-    queues.present = pq.value();
+  };
+  queues = {.graphics = {.queue = gq.value(),
+                         .index = bootstrap->table.device
+                                      .get_queue_index(vkb::QueueType::graphics)
+                                      .value()},
+            .present = {.queue = pq.value(),
+                        .index = bootstrap->table.device
+                                     .get_queue_index(vkb::QueueType::present)
+                                     .value()}};
+}
+
+void VulkanApplication::createCommandPool() {
+  PvCommandPoolCreateInfo info{.queueFamilyIndex = queues.present.index};
+  commandPool = bootstrap->make<PvCommandPool>(info);
+}
+
+void VulkanApplication::createCommandBuffers() {
+  PvCommandBuffersAllocateInfo info{.commandPool = commandPool->handle,
+                                    .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+                                    .commandBufferCount =
+                                        (uint32_t)swapchainData.images.size()};
+  commandBuffers = bootstrap->make<PvCommandBuffers>(info);
+
 }
 
 void VulkanApplication::archiveSwapchainData() {

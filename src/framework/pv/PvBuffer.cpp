@@ -17,6 +17,7 @@ void PvBufferCreateInfo::assign() {
 }
 
 bool PvBuffer::init(PvBufferCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createBuffer(&info.info, info.callback, &handle) !=
       VK_SUCCESS) {
     ERROR("Failed to create vkBuffer!");

@@ -24,6 +24,7 @@ void PvImageVmaCreateInfo::assign() {
 }
 
 bool PvImageVma::init(PvImageVmaCreateInfo &info) {
+  table = info.table;
   handle = new VkImageVma{};
   if (vmaCreateImage(info.table->allocator, &info.info, &info.allocInfo,
                      &handle->image, &handle->meomry, nullptr) != VK_SUCCESS) {

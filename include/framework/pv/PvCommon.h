@@ -92,4 +92,24 @@ private:
   }
 };
 
+template <typename T, typename... Args> struct MixinInfo;
+
+template <typename T> struct MixinInfo<T> {
+  struct Info : T {
+    bool required = false;
+  };
+  Info info;
+};
+
+template <typename T, typename... Args> struct MixinInfo : MixinInfo<Args...> {
+  struct Info : T {
+    bool required = false;
+  };
+  Info info;
+};
+
+template <typename T> struct MemberInfo : T {
+  bool required = false;
+};
+
 } // namespace Pyra

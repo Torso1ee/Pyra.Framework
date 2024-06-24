@@ -1,0 +1,125 @@
+#pragma once
+#include "pv/PvCommon.h"
+#include "pv/PvResource.h"
+#include "vulkan/vulkan_core.h"
+#include <cstdint>
+#include <vector>
+#include <volk.h>
+#include <vulkan/vulkan_core.h>
+namespace Pyra {
+
+class PvCommandBuffer;
+class PvCommandBuffers;
+struct PvCommandBuffersAllocateInfo;
+
+template <> struct CreateInfo_T<PvCommandBuffers> {
+  using type = PvCommandBuffersAllocateInfo;
+};
+
+struct PvCommandBuffersAllocateInfo
+    : PvInfo<VkCommandBufferAllocateInfo, PvCommandBuffers> {
+
+  VkCommandPool commandPool;
+  VkCommandBufferLevel level;
+  uint32_t commandBufferCount;
+
+  friend PvCommandBuffers;
+  friend PvInfo<VkCommandBufferAllocateInfo, PvCommandBuffers>;
+
+private:
+  void assign();
+};
+
+struct BeginCommandBufferInfo
+    : PvInfo<VkCommandBufferBeginInfo, PvCommandBuffers> {
+
+  VkCommandBufferUsageFlags flags;
+  MemberInfo<VkCommandBufferInheritanceInfo> inheritanceInfo;
+
+  friend PvCommandBuffer;
+  friend PvInfo<VkCommandBufferBeginInfo, PvCommandBuffers>;
+
+private:
+  void assign();
+};
+
+struct SetViewportInfo {
+  uint32_t firstViewport;
+  std::vector<VkViewport> viewports;
+};
+
+struct SetScissorInfo {
+  uint32_t firstScissor;
+  std::vector<VkRect2D> scissors;
+};
+
+struct BindPipelineInfo {
+  VkPipelineBindPoint pipelineBindPoint;
+  VkPipeline pipeline;
+};
+
+struct DrawInfo {
+  uint32_t vertexCount;
+  uint32_t instanceCount;
+  uint32_t firstVertex;
+  uint32_t firstInstance;
+};
+
+struct RenderPassBeginInfo : PvInfo<VkRenderPassBeginInfo, PvCommandBuffers> {
+
+  VkRenderPass renderPass;
+  VkFramebuffer framebuffer;
+  VkRect2D renderArea;
+  std::vector<VkClearValue> clearValues;
+  VkSubpassContents subpassContents;
+
+  friend PvCommandBuffer;
+  friend PvInfo<VkRenderPassBeginInfo, PvCommandBuffers>;
+
+private:
+  void assign();
+};
+
+struct PvCommandBuffer {
+
+  PvTable *table;
+  VkCommandBuffer commandBuffer;
+
+  VkResult beginCommandBuffer(BeginCommandBufferInfo info);
+
+  void setViewport(SetViewportInfo info);
+
+  void setScissor(SetScissorInfo info);
+
+  void beginRenderPass(RenderPassBeginInfo info);
+
+  void bindPipeline(BindPipelineInfo info);
+
+  void draw(DrawInfo info);
+
+  void endRenderPass();
+
+  VkResult endCommandBuffer();
+};
+
+class PvCommandBuffers
+    : public PvResource<VkCommandBuffer *, PFN_vkFreeCommandBuffers> {
+public:
+  bool init(PvCommandBuffersAllocateInfo &info);
+
+  template <typename... T>
+  PvCommandBuffers(PvCommandBuffersAllocateInfo &info, T... infos) {
+    info.assign();
+    (info + ... + infos);
+    init(info);
+  }
+
+  PvCommandBuffer get(uint32_t i) {
+    return {.table = table, .commandBuffer = commandBuffers->at(i)};
+  }
+
+private:
+  std::vector<VkCommandBuffer> *commandBuffers;
+};
+
+} // namespace Pyra

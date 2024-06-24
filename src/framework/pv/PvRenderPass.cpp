@@ -38,6 +38,7 @@ void PvRenderPassCreateInfo::assign() {
 }
 
 bool PvRenderPass::init(PvRenderPassCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createRenderPass(&info.info, info.callback, &handle) !=
       VK_SUCCESS) {
     ERROR("Failed to create vkrenderpass!");

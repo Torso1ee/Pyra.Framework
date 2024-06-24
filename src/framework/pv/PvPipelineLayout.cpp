@@ -18,6 +18,7 @@ void PvPipelineLayoutCreateInfo::assign() {
 }
 
 bool PvPipelineLayout::init(PvPipelineLayoutCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createPipelineLayout(&info.info, info.callback,
                                             &handle) != VK_SUCCESS) {
     ERROR("Failed to create vkpipelineLayout!");

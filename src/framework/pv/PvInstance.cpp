@@ -31,6 +31,7 @@ PvInstance::PvInstance(PvTable *t, ManageOperation op) {
 }
 
 bool PvInstance::init(PvInstanceCreateInfo &info) {
+  table = info.table;
   if (vkCreateInstance(&info.info, info.callback, &handle) != VK_SUCCESS) {
     ERROR("Failed to create vkInstance!");
     return false;

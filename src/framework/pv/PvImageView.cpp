@@ -10,6 +10,7 @@ void PvImageViewCreateInfo::assign() {
 }
 
 bool PvImageView::init(PvImageViewCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createImageView(&info.info, info.callback, &handle) !=
       VK_SUCCESS) {
     ERROR("Failed to create vkImageView!");

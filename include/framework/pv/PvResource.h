@@ -1,10 +1,10 @@
 #pragma once
+#include "PvCommon.h"
+#include "core/logging.h"
+#include "core/trait.h"
 #include <memory>
 #include <tuple>
 #include <unordered_map>
-#include "core/logging.h"
-#include "core/trait.h"
-#include "PvCommon.h"
 
 namespace Pyra {
 
@@ -30,7 +30,6 @@ public:
   Handle handle = nullptr;
 
   PvResource() { HandleManager::count += 1; }
-  
 
   ~PvResource() {
     HandleManager::count -= 1;
@@ -71,7 +70,7 @@ public:
 
 protected:
   ManageOperation manageOp;
-  PvTable* table;
+  PvTable *table;
 };
 
 template <typename Handle, typename dctor>

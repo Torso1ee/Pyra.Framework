@@ -20,6 +20,7 @@ void PvFramebufferCreateInfo::assign() {
 }
 
 bool PvFramebuffer::init(PvFramebufferCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createFramebuffer(&info.info, info.callback, &handle) !=
       VK_SUCCESS) {
     ERROR("Failed to create vkFramebuffer!");

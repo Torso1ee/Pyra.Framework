@@ -14,6 +14,7 @@ void PvShaderModuleCreateInfo::assign() {
 }
 
 bool PvShaderModule::init(PvShaderModuleCreateInfo &info) {
+  table = info.table;
   if (info.table->disp.createShaderModule(&info.info, info.callback, &handle) !=
       VK_SUCCESS) {
     ERROR("Failed to create vkShaderModule!");
