@@ -45,54 +45,61 @@ void BeginCommandBufferInfo::assign() {
 }
 
 void RenderPassBeginInfo::assign() {
-  info = {
-      .sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
-      .renderPass = renderPass,
-      .framebuffer = framebuffer,
-      .clearValueCount = (uint32_t)clearValues.size(),
-      .pClearValues = NULLPTR_IF_EMPTY(clearValues)
-  };
+  info = {.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
+          .renderPass = renderPass,
+          .framebuffer = framebuffer,
+          .clearValueCount = (uint32_t)clearValues.size(),
+          .pClearValues = NULLPTR_IF_EMPTY(clearValues)};
 }
 
-VkResult PvCommandBuffer::beginCommandBuffer(BeginCommandBufferInfo info) {
+PvCommandBuffer &
+PvCommandBuffer::beginCommandBuffer(BeginCommandBufferInfo info) {
   info.assign();
-  return table->disp.beginCommandBuffer(commandBuffer, &info.info);
+  table->disp.beginCommandBuffer(commandBuffer, &info.info);
+  return *this;
 }
 
-void PvCommandBuffer::setViewport(SetViewportInfo info) {
+PvCommandBuffer &PvCommandBuffer::setViewport(SetViewportInfo info) {
   table->disp.cmdSetViewport(commandBuffer, info.firstViewport,
                              info.viewports.size(),
                              NULLPTR_IF_EMPTY(info.viewports));
+  return *this;
 }
 
-void PvCommandBuffer::setScissor(SetScissorInfo info) {
+PvCommandBuffer &PvCommandBuffer::setScissor(SetScissorInfo info) {
   table->disp.cmdSetScissor(commandBuffer, info.firstScissor,
                             info.scissors.size(),
                             NULLPTR_IF_EMPTY(info.scissors));
+  return *this;
 }
 
-void PvCommandBuffer::beginRenderPass(RenderPassBeginInfo info) {
+PvCommandBuffer &PvCommandBuffer::beginRenderPass(RenderPassBeginInfo info) {
   info.assign();
   table->disp.cmdBeginRenderPass(commandBuffer, &info.info,
                                  info.subpassContents);
+  return *this;
 }
 
-void PvCommandBuffer::bindPipeline(BindPipelineInfo info) {
+PvCommandBuffer &PvCommandBuffer::bindPipeline(BindPipelineInfo info) {
   table->disp.cmdBindPipeline(commandBuffer, info.pipelineBindPoint,
                               info.pipeline);
+  return *this;
 }
 
-void PvCommandBuffer::draw(DrawInfo info) {
+PvCommandBuffer &PvCommandBuffer::draw(DrawInfo info) {
   table->disp.cmdDraw(commandBuffer, info.vertexCount, info.instanceCount,
                       info.firstVertex, info.instanceCount);
+  return *this;
 }
 
-void PvCommandBuffer::endRenderPass() {
+PvCommandBuffer &PvCommandBuffer::endRenderPass() {
   table->disp.cmdEndRenderPass(commandBuffer);
+  return *this;
 }
 
-VkResult PvCommandBuffer::endCommandBuffer() {
-  return table->disp.endCommandBuffer(commandBuffer);
+PvCommandBuffer &PvCommandBuffer::endCommandBuffer() {
+  table->disp.endCommandBuffer(commandBuffer);
+  return *this;
 }
 
 } // namespace Pyra

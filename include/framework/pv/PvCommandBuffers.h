@@ -85,21 +85,21 @@ struct PvCommandBuffer {
   PvTable *table;
   VkCommandBuffer commandBuffer;
 
-  VkResult beginCommandBuffer(BeginCommandBufferInfo info);
+  PvCommandBuffer& beginCommandBuffer(BeginCommandBufferInfo info);
 
-  void setViewport(SetViewportInfo info);
+  PvCommandBuffer& setViewport(SetViewportInfo info);
 
-  void setScissor(SetScissorInfo info);
+  PvCommandBuffer& setScissor(SetScissorInfo info);
 
-  void beginRenderPass(RenderPassBeginInfo info);
+  PvCommandBuffer& beginRenderPass(RenderPassBeginInfo info);
 
-  void bindPipeline(BindPipelineInfo info);
+  PvCommandBuffer& bindPipeline(BindPipelineInfo info);
 
-  void draw(DrawInfo info);
+  PvCommandBuffer& draw(DrawInfo info);
 
-  void endRenderPass();
+  PvCommandBuffer& endRenderPass();
 
-  VkResult endCommandBuffer();
+  PvCommandBuffer& endCommandBuffer();
 };
 
 class PvCommandBuffers
