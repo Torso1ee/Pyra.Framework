@@ -30,12 +30,14 @@ void PvSwapchainCreateInfo::assign() {
 PvSwapchain::PvSwapchain(PvTable *t, ManageOperation op) {
   table = t;
   handle = t->swapchain;
-  if (deconstuctor == nullptr)
-    deconstuctor = table->disp.fp_vkDestroySwapchainKHR;
+
+  if (!setDctor)
+    setDeconstructor(table->disp.fp_vkDestroySwapchainKHR);
+
   manage(
       handle,
       std::make_tuple(t->device.device, handle, t->device.allocation_callbacks),
-      op);
+      op, {t->device.device});
 }
 
 bool PvSwapchain::init(PvSwapchainCreateInfo &info) {
@@ -45,12 +47,14 @@ bool PvSwapchain::init(PvSwapchainCreateInfo &info) {
     ERROR("Failed to create vkSswapchain!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = table->disp.fp_vkDestroySwapchainKHR;
+
+  if (!setDctor)
+    setDeconstructor(table->disp.fp_vkDestroySwapchainKHR);
+
   manage(handle,
          std::make_tuple(table->device.device, handle,
                          table->device.allocation_callbacks),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 

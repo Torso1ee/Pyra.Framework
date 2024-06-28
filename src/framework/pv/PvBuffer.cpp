@@ -23,11 +23,11 @@ bool PvBuffer::init(PvBufferCreateInfo &info) {
     ERROR("Failed to create vkBuffer!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyBuffer;
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyBuffer);
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 

@@ -39,6 +39,7 @@ public:
   }
 
   PvInstance(PvTable*,ManageOperation op = AUTO_MANAGE);
+
 };
 
 } // namespace Pyra

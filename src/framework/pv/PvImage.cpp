@@ -31,20 +31,25 @@ bool PvImage::init(PvImageCreateInfo &info) {
     ERROR("Failed to create vkImage!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyImage;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyImage);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 
-PvImage::PvImage(PvTable *t, VkImage image, ManageOperation op) {
+PvImage::PvImage(PvTable *t, VkImage image) {
   table = t;
   handle = image;
-  if (deconstuctor == nullptr)
-    deconstuctor = t->disp.fp_vkDestroyImage;
-  manage(handle, std::make_tuple(t->device.device, handle, nullptr), op);
+
+  if (!setDctor)
+    setDeconstructor(t->disp.fp_vkDestroyImage);
+
+  manage(handle, std::make_tuple(t->device.device, handle, nullptr),
+         DO_NOT_MANAGE);
 }
 
 } // namespace Pyra

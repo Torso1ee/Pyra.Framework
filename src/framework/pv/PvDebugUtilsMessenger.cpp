@@ -34,19 +34,25 @@ bool PvDebugUtilsMessenger::init(PvDebugUtilsMessengerCreateInfo &info) {
     ERROR("Failed to create vkDebugUtilsMessengerEXT!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT;
+
+  if (!setDctor)
+    setDeconstructor(table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT);
+
   manage(handle, std::make_tuple(table->instance, handle, info.callback),
-         info.operation);
+         info.operation, {info.table->instance.instance});
   return true;
 }
 
 PvDebugUtilsMessenger::PvDebugUtilsMessenger(PvTable *t, ManageOperation op) {
   table = t;
   handle = t->instance.debug_messenger;
-  if (deconstuctor == nullptr)
-    deconstuctor = table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT;
-  manage(handle, std::make_tuple(t->instance, handle, t->instance.allocation_callbacks), op);
+
+  if (!setDctor)
+    setDeconstructor(table->inst_disp.fp_vkDestroyDebugUtilsMessengerEXT);
+
+  manage(handle,
+         std::make_tuple(t->instance, handle, t->instance.allocation_callbacks),
+         op, {t->instance});
 }
 
 } // namespace Pyra

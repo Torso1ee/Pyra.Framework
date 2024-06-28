@@ -1,6 +1,7 @@
 #include "pv/PvDevice.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "vulkan/vulkan_core.h"
 #include <cstdint>
 
 namespace Pyra {
@@ -22,11 +23,13 @@ void PvDeviceCreateInfo::assign() {
 PvDevice::PvDevice(PvTable *t, ManageOperation op) {
   table = t;
   handle = t->device;
-  if (deconstuctor == nullptr)
-    deconstuctor = reinterpret_cast<PFN_vkDestroyDevice>(
-        table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice"));
-  manage(handle, std::make_tuple(handle, t->device.allocation_callbacks),
-         op);
+
+  if (!setDctor)
+    setDeconstructor(reinterpret_cast<PFN_vkDestroyDevice>(
+        table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice")));
+
+  manage(handle, std::make_tuple(handle, t->device.allocation_callbacks), op,
+         {table->instance.instance});
 }
 
 void PvDevice::WaitIdle() { table->disp.deviceWaitIdle(); }
@@ -38,10 +41,13 @@ bool PvDevice::init(PvDeviceCreateInfo &info) {
     ERROR("Failed to create vkDevice!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = reinterpret_cast<PFN_vkDestroyDevice>(
-        table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice"));
-  manage(handle, std::make_tuple(handle, table->device.allocation_callbacks), info.operation);
+
+  if (!setDctor)
+    setDeconstructor(reinterpret_cast<PFN_vkDestroyDevice>(
+        table->device.fp_vkGetDeviceProcAddr(handle, "vkDestroyDevice")));
+
+  manage(handle, std::make_tuple(handle, table->device.allocation_callbacks),
+         info.operation, {table->instance.instance});
   return true;
 }
 

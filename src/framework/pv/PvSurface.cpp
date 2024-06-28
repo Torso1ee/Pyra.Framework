@@ -6,26 +6,25 @@ namespace Pyra {
 
 PvSurface::PvSurface(PvSurfaceFromWindowInfo &info) {
   table = info.table;
-  if (!info.window->createSurface(table->instance,
-                                  &handle)) {
+  if (!info.window->createSurface(table->instance, &handle)) {
     return;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = table->inst_disp.fp_vkDestroySurfaceKHR;
-  manage(
-      handle,
-      std::make_tuple(table->instance, handle, nullptr),
-      info.operation);
+
+  if (!setDctor)
+    setDeconstructor(info.table->inst_disp.fp_vkDestroySurfaceKHR);
+
+  manage(handle, std::make_tuple(table->instance, handle, nullptr),
+         info.operation, {table->instance.instance});
 }
 
 PvSurface::PvSurface(PvTable *t, VkSurfaceKHR surface, ManageOperation op) {
   table = t;
   handle = surface;
-  if (deconstuctor == nullptr)
-    deconstuctor = table->inst_disp.fp_vkDestroySurfaceKHR;
+  if (!setDctor)
+    setDeconstructor(t->inst_disp.fp_vkDestroySurfaceKHR);
   manage(handle,
          std::make_tuple(t->instance, handle, t->instance.allocation_callbacks),
-         op);
+         op, {t->instance.instance});
 }
 
 } // namespace Pyra

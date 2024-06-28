@@ -41,5 +41,6 @@ public:
   void WaitIdle();
 
   PvDevice(PvTable *, ManageOperation op = AUTO_MANAGE);
+
 };
 } // namespace Pyra

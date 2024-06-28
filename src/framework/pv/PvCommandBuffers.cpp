@@ -27,12 +27,14 @@ bool PvCommandBuffers::init(PvCommandBuffersAllocateInfo &info) {
     return false;
   }
   handle = commandBuffers->data();
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkFreeCommandBuffers;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkFreeCommandBuffers);
+
   manage(handle,
          std::make_tuple(info.table->device.device, info.commandPool,
                          info.commandBufferCount, handle),
-         info.operation);
+         info.operation, {info.table->device.device, info.commandPool});
   return true;
 }
 

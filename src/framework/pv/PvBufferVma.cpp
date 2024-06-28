@@ -25,11 +25,13 @@ bool PvBufferVma::init(PvBufferVmaCreateInfo &info) {
     ERROR("Failed to create vmaBuffer!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = vmaDestroyBuffer;
+
+  if (!setDctor)
+    setDeconstructor(vmaDestroyBuffer);
+
   manage(handle,
          std::make_tuple(info.table->allocator, handle->Buffer, handle->meomry),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 

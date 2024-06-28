@@ -19,11 +19,13 @@ bool PvCommandPool::init(PvCommandPoolCreateInfo &info) {
     ERROR("Failed to create vkCommandPool!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyCommandPool;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyCommandPool);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 

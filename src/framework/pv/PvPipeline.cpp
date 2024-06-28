@@ -195,11 +195,13 @@ bool PvPipeline::init(PvGraphicsPipelineCreateInfo &info) {
     ERROR("Failed to create vkpipeline!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyPipeline);
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation,
+         {info.table->device.device, info.pipelineCache, info.layout,
+          info.renderPass});
   return true;
 }
 
@@ -211,20 +213,24 @@ bool PvPipeline::init(PvComputePipelineCreateInfo &info) {
     ERROR("Failed to create vkpipeline!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyPipeline);
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation,
+         {info.table->device.device, info.pipelineCache, info.layout});
   return true;
 }
 
 bool PvPipeline::init(PvMultiGraphicsPipelineCreateInfo &info) {
   table = info.table;
   std::vector<VkGraphicsPipelineCreateInfo> pInfos;
+  std::set<void *> depsSet{info.table->device.device, info.pipelineCache};
   for (auto &pInfo : info.graphicsPipelineCreateInfos) {
     pInfo.assign();
     pInfos.push_back(pInfo.info);
+    depsSet.insert(pInfo.renderPass);
+    depsSet.insert(pInfo.layout);
   }
   if (info.table->disp.createGraphicsPipelines(
           info.pipelineCache, pInfos.size(), NULLPTR_IF_EMPTY(pInfos),
@@ -232,20 +238,28 @@ bool PvPipeline::init(PvMultiGraphicsPipelineCreateInfo &info) {
     ERROR("Failed to create vkpipeline!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+
+  std::vector<void *> deps{};
+  for (auto p : depsSet)
+    deps.push_back(p);
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyPipeline);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, deps);
   return true;
 }
 
 bool PvPipeline::init(PvMultiComputePipelineCreateInfo &info) {
   table = info.table;
   std::vector<VkComputePipelineCreateInfo> pInfos;
+  std::set<void *> depsSet{info.table->device.device, info.pipelineCache};
   for (auto &pInfo : info.computePipelineCreateInfos) {
     pInfo.assign();
     pInfos.push_back(pInfo.info);
+    depsSet.insert(pInfo.layout);
   }
   if (info.table->disp.createComputePipelines(
           info.pipelineCache, pInfos.size(), NULLPTR_IF_EMPTY(pInfos),
@@ -253,11 +267,17 @@ bool PvPipeline::init(PvMultiComputePipelineCreateInfo &info) {
     ERROR("Failed to create vkpipeline!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyPipeline;
+
+  std::vector<void *> deps{};
+  for (auto p : depsSet)
+    deps.push_back(p);
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyPipeline);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, deps);
   return true;
 }
 

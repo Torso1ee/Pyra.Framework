@@ -6,7 +6,15 @@
 namespace Pyra {
 
 void PvImageViewCreateInfo::assign() {
-  
+  info = {
+      .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
+      .flags = flags,
+      .image = image,
+      .viewType = viewType,
+      .format = format,
+      .components = components,
+      .subresourceRange = subresourceRange,
+  };
 }
 
 bool PvImageView::init(PvImageViewCreateInfo &info) {
@@ -16,20 +24,25 @@ bool PvImageView::init(PvImageViewCreateInfo &info) {
     ERROR("Failed to create vkImageView!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyImageView;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyImageView);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, {info.image});
   return true;
 }
 
 PvImageView::PvImageView(PvTable *t, VkImageView v, ManageOperation op) {
   table = t;
   handle = v;
-  if (deconstuctor == nullptr)
-    deconstuctor = t->disp.fp_vkDestroyImageView;
-  manage(handle, std::make_tuple(t->device.device, handle, nullptr), op);
+
+  if (!setDctor)
+    setDeconstructor(t->disp.fp_vkDestroyImageView);
+
+  manage(handle, std::make_tuple(t->device.device, handle, nullptr), op,
+         {t->swapchain.swapchain});
 }
 
 } // namespace Pyra

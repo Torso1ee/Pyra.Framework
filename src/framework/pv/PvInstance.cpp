@@ -3,6 +3,8 @@
 #include "core/logging.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "pv/PvNode.h"
+#include "pv/PvResource.h"
 
 namespace Pyra {
 
@@ -24,8 +26,10 @@ void PvInstanceCreateInfo::assign() {
 PvInstance::PvInstance(PvTable *t, ManageOperation op) {
   table = t;
   handle = table->inst_disp.instance;
-  if (deconstuctor == nullptr)
-    deconstuctor = table->inst_disp.fp_vkDestroyInstance;
+
+  if (!setDctor)
+    setDeconstructor(table->inst_disp.fp_vkDestroyInstance);
+
   manage(handle, std::make_tuple(handle, table->instance.allocation_callbacks),
          op);
 }
@@ -37,8 +41,10 @@ bool PvInstance::init(PvInstanceCreateInfo &info) {
     return false;
   }
   table = info.table;
-  if (deconstuctor == nullptr)
-    deconstuctor = table->inst_disp.fp_vkDestroyInstance;
+
+  if (!setDctor)
+    setDeconstructor(table->inst_disp.fp_vkDestroyInstance);
+
   manage(handle, std::make_tuple(handle, info.callback), info.operation);
   return true;
 }

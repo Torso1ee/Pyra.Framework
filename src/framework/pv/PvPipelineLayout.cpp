@@ -24,11 +24,13 @@ bool PvPipelineLayout::init(PvPipelineLayoutCreateInfo &info) {
     ERROR("Failed to create vkpipelineLayout!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyPipelineLayout;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyPipelineLayout);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation,{info.table->device.device});
   return true;
 }
 

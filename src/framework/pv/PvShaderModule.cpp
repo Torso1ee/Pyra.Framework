@@ -20,11 +20,13 @@ bool PvShaderModule::init(PvShaderModuleCreateInfo &info) {
     ERROR("Failed to create vkShaderModule!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyShaderModule;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyShaderModule);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 

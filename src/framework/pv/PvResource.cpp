@@ -1,5 +1,5 @@
 #include "pv/PvResource.h"
-#include "vulkan/vulkan_core.h"
+#include "pv/PvNode.h"
 
 namespace Pyra {
 
@@ -11,37 +11,23 @@ std::shared_ptr<HandleManager> HandleManager::get() {
 
 std::shared_ptr<HandleManager> HandleManager::handleManager = nullptr;
 
-int HandleManager::count = 0;
+void HandleManager::release() {}
 
-void HandleManager::HandleManager::release() {
-  //   VulkanResource<VkSampler, PFN_vkDestroySampler>::releaseAll();
-  PvResource<VkBuffer, PFN_vkDestroyBuffer>::releaseAll();
-  //   VulkanResource<VkCommandBuffer *,
-  //   PFN_vkFreeCommandBuffers>::releaseAll();
-  PvResource<VkPipeline, PFN_vkDestroyPipeline>::releaseAll();
-  PvResource<VkRenderPass, PFN_vkDestroyRenderPass>::releaseAll();
-  PvResource<VkPipelineLayout, PFN_vkDestroyPipelineLayout>::releaseAll();
-  PvResource<VkShaderModule, PFN_vkDestroyShaderModule>::releaseAll();
-  PvResource<VkFramebuffer, PFN_vkDestroyFramebuffer>::releaseAll();
-  //   VulkanResource<VkSampler, PFN_vkDestroySampler>::releaseAll();
-  PvResource<VkImageView, PFN_vkDestroyImageView>::releaseAll();
-  //   VulkanResource<VkImage, PFN_vkDestroyImage>::releaseAll();
-  PvResource<VkDeviceMemory, PFN_vkFreeMemory>::releaseAll();
-  //   VulkanResource<VkPipelineCache,
-  //   PFN_vkDestroyPipelineCache>::releaseAll(); VulkanResource<VkCommandPool,
-  //   PFN_vkDestroyCommandPool>::releaseAll(); VulkanResource<VkSemaphore,
-  //   PFN_vkDestroySemaphore>::releaseAll(); VulkanResource<VkFence,
-  //   PFN_vkDestroyFence>::releaseAll();
-  PvResource<VkSwapchainKHR, PFN_vkDestroySwapchainKHR>::releaseAll();
-  //   VulkanResource<VkDescriptorPool,
-  //   PFN_vkDestroyDescriptorPool>::releaseAll();
-  //   VulkanResource<VkDescriptorSetLayout,
-  //                  PFN_vkDestroyDescriptorSetLayout>::releaseAll();
-  PvResource<VkSurfaceKHR, PFN_vkDestroySurfaceKHR>::releaseAll();
-  PvResource<VkDevice, PFN_vkDestroyDevice>::releaseAll();
-  PvResource<VkDebugUtilsMessengerEXT,
-             PFN_vkDestroyDebugUtilsMessengerEXT>::releaseAll();
-  PvResource<VkInstance, PFN_vkDestroyInstance>::releaseAll();
+void HandleManager::registerNode(PvNodeBase *node, std::vector<void *> deps) {
+  nodeMap[node->handle] = node;
+  for (auto d : deps) {
+    if (d == nullptr)
+      continue;
+    if (nodeMap.contains(d)) {
+      nodeMap[d]->childrens.push_back(node);
+      node->parents.push_back(nodeMap[d]);
+    }
+  }
+}
+
+void HandleManager::release(void *handle) {
+  auto node = nodeMap[handle];
+  node->release();
 }
 
 HandleManager::~HandleManager() { release(); }

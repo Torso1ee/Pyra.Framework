@@ -31,11 +31,13 @@ bool PvImageVma::init(PvImageVmaCreateInfo &info) {
     ERROR("Failed to create vmaImage!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = vmaDestroyImage;
+
+  if (!setDctor)
+    setDeconstructor(vmaDestroyImage);
+
   manage(handle,
          std::make_tuple(info.table->allocator, handle->image, handle->meomry),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 

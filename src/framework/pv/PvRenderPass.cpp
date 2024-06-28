@@ -44,11 +44,13 @@ bool PvRenderPass::init(PvRenderPassCreateInfo &info) {
     ERROR("Failed to create vkrenderpass!");
     return false;
   }
-  if (deconstuctor == nullptr)
-    deconstuctor = info.table->disp.fp_vkDestroyRenderPass;
+
+  if (!setDctor)
+    setDeconstructor(info.table->disp.fp_vkDestroyRenderPass);
+
   manage(handle,
          std::make_tuple(info.table->device.device, handle, info.callback),
-         info.operation);
+         info.operation, {info.table->device.device});
   return true;
 }
 
