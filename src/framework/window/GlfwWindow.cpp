@@ -4,7 +4,6 @@
 #include <volk.h>
 #include "window/WindowBase.h"
 #include <cstdint>
-#include <stdexcept>
 
 
 namespace Pyra {

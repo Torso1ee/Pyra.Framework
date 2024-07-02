@@ -1,11 +1,10 @@
 #include "pv/PvCommandBuffers.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
+#include "core/Core.h"
 #include <cstdint>
 #include <vector>
 #include <volk.h>
-#include <vulkan/vulkan_core.h>
 
 namespace Pyra {
 

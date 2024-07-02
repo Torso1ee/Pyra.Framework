@@ -1,6 +1,6 @@
 #pragma once
 #include "pv/PvDebugUtilsMessenger.h"
-#include "core/logging.h"
+#include "core/Core.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
 

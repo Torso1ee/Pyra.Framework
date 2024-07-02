@@ -1,6 +1,7 @@
 #include "pv/PvBufferVma.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "core/Core.h"
 #include <cstdint>
 #include <volk.h>
 

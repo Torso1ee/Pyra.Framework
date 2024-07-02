@@ -1,6 +1,5 @@
 #pragma once
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
 #define NOGDI
 #include "pv/PvResource.h"
 #include <cstdint>

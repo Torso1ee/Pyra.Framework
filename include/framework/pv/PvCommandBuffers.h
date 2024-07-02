@@ -1,12 +1,10 @@
 #pragma once
 #include "pv/PvCommon.h"
 #include "pv/PvResource.h"
-#include "vulkan/vulkan_core.h"
 #include <cstddef>
 #include <cstdint>
 #include <vector>
 #include <volk.h>
-#include <vulkan/vulkan_core.h>
 namespace Pyra {
 
 class PvCommandBuffer;

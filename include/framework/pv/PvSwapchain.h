@@ -1,9 +1,6 @@
 #pragma once
 #include "pv/PvCommon.h"
-#include "pv/PvImage.h"
-#include "pv/PvImageView.h"
 #include "pv/PvResource.h"
-#include "vulkan/vulkan_core.h"
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -12,6 +9,8 @@
 namespace Pyra {
 
 class PvSwapchain;
+class PvImage;
+class PvImageView;
 struct PvSwapchainCreateInfo;
 
 template <> struct CreateInfo_T<PvSwapchain> {

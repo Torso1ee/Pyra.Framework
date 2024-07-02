@@ -3,7 +3,7 @@
 #include "pv/PvCommon.h"
 #include "pv/PvImage.h"
 #include "pv/PvImageView.h"
-#include "vulkan/vulkan_core.h"
+#include "core/Core.h"
 #include <cstdint>
 #include <memory>
 

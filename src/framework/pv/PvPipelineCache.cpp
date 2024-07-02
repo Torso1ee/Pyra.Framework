@@ -1,7 +1,6 @@
 #include "pv/PvPipelineCache.h"
 #include "pv/PvBootstrap.h"
-#include "vulkan/vulkan_core.h"
-
+#include "core/Core.h"
 namespace Pyra {
 
 void PvPipelineCacheCreateInfo::assign() {

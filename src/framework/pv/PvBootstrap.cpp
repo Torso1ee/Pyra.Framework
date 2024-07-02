@@ -11,7 +11,6 @@
 #include "pv/pvInstance.h"
 #include "window/GlfwWindow.h"
 #include <memory>
-#include <vector>
 #include <volk.h>
 #include "core/GlslCompiler.h"
 

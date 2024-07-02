@@ -2,7 +2,7 @@
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
 #include <volk.h>
-
+#include "core/Core.h"
 namespace Pyra {
 
 void PvImageViewCreateInfo::assign() {

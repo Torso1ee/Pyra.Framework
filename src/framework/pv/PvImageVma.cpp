@@ -3,6 +3,7 @@
 #include "pv/PvCommon.h"
 #include <cstdint>
 #include <volk.h>
+#include "core/Core.h"
 
 namespace Pyra {
 

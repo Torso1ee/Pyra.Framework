@@ -1,7 +1,7 @@
 #include "pv/PvShaderModule.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
+#include "core/Core.h"
 #include <volk.h>
 
 namespace Pyra {

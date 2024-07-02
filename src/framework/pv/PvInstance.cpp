@@ -1,6 +1,6 @@
 #include "pv/pvInstance.h"
 #include "VkBootstrap.h"
-#include "core/logging.h"
+#include "core/Core.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
 #include "pv/PvNode.h"

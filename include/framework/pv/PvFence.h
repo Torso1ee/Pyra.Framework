@@ -1,6 +1,5 @@
 #pragma once
 #include "pv/PvResource.h"
-#include "vulkan/vulkan_core.h"
 #include <vector>
 #include <volk.h>
 namespace Pyra {

@@ -1,4 +1,5 @@
-#include "vulkan/vulkan_core.h"
+#pragma once
+#include <volk.h>
 #include <cstdint>
 namespace Pyra {
 

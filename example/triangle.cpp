@@ -1,16 +1,5 @@
-#include "app/RenderContext.h"
-#include "app/VulkanApplication.h"
-#include "pv/PvBootstrap.h"
-#include "pv/PvCommon.h"
-#include "pv/PvFence.h"
-#include "pv/PvImageView.h"
-#include "pv/PvPipeline.h"
-#include "pv/PvPipelineLayout.h"
-#include "pv/PvRenderPass.h"
-#include "pv/PvSemaphore.h"
-#include "pv/PvShaderModule.h"
-#include "pv/PvSwapchain.h"
-#include "vulkan/vulkan_core.h"
+#include "app/App.h"
+#include "pv/Pv.h"
 #include <cstdint>
 #include <memory>
 

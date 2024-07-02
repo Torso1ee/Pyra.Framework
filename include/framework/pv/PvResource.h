@@ -1,10 +1,8 @@
 #pragma once
 #include "PvCommon.h"
-#include "core/logging.h"
 #include "core/trait.h"
 #include "pv/PvNode.h"
 #include <memory>
-#include <tuple>
 #include <unordered_map>
 #include <vector>
 

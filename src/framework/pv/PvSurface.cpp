@@ -1,6 +1,7 @@
 #include "pv/PvSurface.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "core/Core.h"
 
 namespace Pyra {
 

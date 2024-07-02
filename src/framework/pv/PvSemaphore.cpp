@@ -1,8 +1,7 @@
 #include "pv/PvSemaphore.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
-#include <cstdint>
+#include "core/logging.h"
 #include <volk.h>
 
 namespace Pyra {

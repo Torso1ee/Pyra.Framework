@@ -1,21 +1,9 @@
 #pragma once
-#include "VkBootstrap.h"
+#include "pv/Pv.h"
 #include "VkBootstrapDispatch.h"
 #include "app/ApplicationBase.h"
 #include "app/RenderContext.h"
-#include "core/Event.h"
-#include "pv/PvCommandBuffers.h"
-#include "pv/PvCommandPool.h"
-#include "pv/PvFence.h"
-#include "pv/PvFramebuffer.h"
-#include "pv/PvPipelineLayout.h"
-#include "pv/PvQueue.h"
-#include "pv/PvRenderPass.h"
-#include "pv/PvSemaphore.h"
-#include "pv/PvSurface.h"
-#include "pv/PvSwapchain.h"
 #include <memory>
-#include <utility>
 #include <vector>
 
 namespace Pyra {

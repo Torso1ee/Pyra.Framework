@@ -1,7 +1,4 @@
 #pragma once
-#include "window/WindowBase.h"
-#include <memory>
-
 
 namespace Pyra {
 

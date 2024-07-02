@@ -1,8 +1,5 @@
 #pragma once
-#include "pv/PvPipeline.h"
 #include "pv/PvResource.h"
-#include "vulkan/vulkan_core.h"
-#include <cstdint>
 #include <vector>
 #include <volk.h>
 namespace Pyra {

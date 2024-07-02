@@ -2,11 +2,8 @@
 #define NOGDI
 #include "PvResource.h"
 #include "pv/PvCommon.h"
-#include "vulkan/vulkan_core.h"
-#include <array>
 #include <vector>
 #include <volk.h>
-#include <vulkan/vulkan_core.h>
 
 namespace Pyra {
 

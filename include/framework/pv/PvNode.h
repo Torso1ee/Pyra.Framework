@@ -1,10 +1,9 @@
 #pragma once
-#include "core/trait.h"
+#include "core/Core.h"
 #include <algorithm>
 #include <memory.h>
 #include <string>
 #include <vector>
-
 
 namespace Pyra {
 
@@ -34,7 +33,7 @@ template <typename Handle, typename dctor> class PvNode : public PvNodeBase {
 public:
   typename function_traits<dctor>::arg_types args;
 
-  static dctor deconstructor;
+  static inline dctor deconstructor = nullptr;
 
   PvNode(void *h, function_traits<dctor>::arg_types arg)
       : args(arg), PvNodeBase(h) {}
@@ -60,7 +59,4 @@ public:
     }
   }
 };
-
-template <typename Handle, typename dctor>
-dctor PvNode<Handle, dctor>::deconstructor = nullptr;
 } // namespace Pyra.

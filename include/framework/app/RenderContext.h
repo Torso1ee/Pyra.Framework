@@ -1,10 +1,5 @@
 #pragma once
-#include "pv/PvCommon.h"
-#include "pv/PvFence.h"
-#include "pv/PvFramebuffer.h"
-#include "pv/PvImage.h"
-#include "pv/PvImageView.h"
-#include "pv/PvSemaphore.h"
+#include "pv/Pv.h"
 #include <cstdint>
 #include <memory>
 #include <vector>
