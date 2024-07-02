@@ -2,6 +2,7 @@
 #include "pv/PvCommon.h"
 #include "pv/PvResource.h"
 #include "vulkan/vulkan_core.h"
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 #include <volk.h>
@@ -85,21 +86,21 @@ struct PvCommandBuffer {
   PvTable *table;
   VkCommandBuffer commandBuffer;
 
-  PvCommandBuffer& beginCommandBuffer(BeginCommandBufferInfo info);
+  PvCommandBuffer &beginCommandBuffer(BeginCommandBufferInfo info);
 
-  PvCommandBuffer& setViewport(SetViewportInfo info);
+  PvCommandBuffer &setViewport(SetViewportInfo info);
 
-  PvCommandBuffer& setScissor(SetScissorInfo info);
+  PvCommandBuffer &setScissor(SetScissorInfo info);
 
-  PvCommandBuffer& beginRenderPass(RenderPassBeginInfo info);
+  PvCommandBuffer &beginRenderPass(RenderPassBeginInfo info);
 
-  PvCommandBuffer& bindPipeline(BindPipelineInfo info);
+  PvCommandBuffer &bindPipeline(BindPipelineInfo info);
 
-  PvCommandBuffer& draw(DrawInfo info);
+  PvCommandBuffer &draw(DrawInfo info);
 
-  PvCommandBuffer& endRenderPass();
+  PvCommandBuffer &endRenderPass();
 
-  PvCommandBuffer& endCommandBuffer();
+  PvCommandBuffer &endCommandBuffer();
 };
 
 class PvCommandBuffers
@@ -117,6 +118,8 @@ public:
   PvCommandBuffer get(uint32_t i) {
     return {.table = table, .commandBuffer = commandBuffers->at(i)};
   }
+
+  size_t size() { return commandBuffers->size(); }
 
 private:
   std::vector<VkCommandBuffer> *commandBuffers;

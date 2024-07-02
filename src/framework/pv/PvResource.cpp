@@ -11,7 +11,12 @@ std::shared_ptr<HandleManager> HandleManager::get() {
 
 std::shared_ptr<HandleManager> HandleManager::handleManager = nullptr;
 
-void HandleManager::release() {}
+void HandleManager::release() {
+  for (auto p : nodeMap) {
+    delete p.second;
+  }
+  nodeMap.clear();
+}
 
 void HandleManager::registerNode(PvNodeBase *node, std::vector<void *> deps) {
   nodeMap[node->handle] = node;

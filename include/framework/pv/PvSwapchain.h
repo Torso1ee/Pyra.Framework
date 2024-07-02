@@ -1,8 +1,11 @@
 #pragma once
 #include "pv/PvCommon.h"
+#include "pv/PvImage.h"
+#include "pv/PvImageView.h"
 #include "pv/PvResource.h"
 #include "vulkan/vulkan_core.h"
 #include <cstdint>
+#include <memory>
 #include <vector>
 #include <volk.h>
 
@@ -52,6 +55,15 @@ public:
     init(info);
   }
 
-  PvSwapchain(PvTable *, ManageOperation op = MANUALLY_MANAGE);
+  PvSwapchain(PvTable *, ManageOperation op = AUTO_MANAGE);
+
+  void archiveData() override ;
+
+  std::vector<std::shared_ptr<PvImage>> images;
+
+  std::vector<std::shared_ptr<PvImageView>> imageViews;
+
+  VkExtent2D extent;
+  VkFormat imageFormat;
 };
 } // namespace Pyra

@@ -1,8 +1,11 @@
 #include "pv/PvSwapchain.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "pv/PvImage.h"
+#include "pv/PvImageView.h"
 #include "vulkan/vulkan_core.h"
 #include <cstdint>
+#include <memory>
 
 namespace Pyra {
 
@@ -38,6 +41,8 @@ PvSwapchain::PvSwapchain(PvTable *t, ManageOperation op) {
       handle,
       std::make_tuple(t->device.device, handle, t->device.allocation_callbacks),
       op, {t->device.device});
+
+  archiveData();
 }
 
 bool PvSwapchain::init(PvSwapchainCreateInfo &info) {
@@ -55,7 +60,25 @@ bool PvSwapchain::init(PvSwapchainCreateInfo &info) {
          std::make_tuple(table->device.device, handle,
                          table->device.allocation_callbacks),
          info.operation, {info.table->device.device});
+
+  archiveData();
+
   return true;
+}
+
+void PvSwapchain::archiveData() {
+  if (table->swapchain.swapchain != VK_NULL_HANDLE) {
+    extent = table->swapchain.extent;
+    imageFormat = table->swapchain.image_format;
+    auto imgs = table->swapchain.get_images().value();
+    auto views = table->swapchain.get_image_views().value();
+    for (uint32_t i = 0; i < imgs.size(); i++) {
+      images.push_back(std::make_shared<PvImage>(table, imgs[i]));
+      imageViews.push_back(std::make_shared<PvImageView>(table, views[i]));
+    }
+  } else {
+    // TODO
+  }
 }
 
 } // namespace Pyra

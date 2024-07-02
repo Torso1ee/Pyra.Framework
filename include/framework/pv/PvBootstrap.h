@@ -47,7 +47,6 @@ public:
     std::shared_ptr<PvSwapchain> swapchain;
   } init;
 
-  PvTable table;
 
   using fp_surface_construct = VkSurfaceKHR (*)(VkInstance,
                                                 std::shared_ptr<WindowBase>);
@@ -112,6 +111,9 @@ private:
   fp_swapchain_setting swapchain_setting = nullptr;
 
   bool createSwapchain();
+
+  PvTable table;
+
 };
 
 } // namespace Pyra

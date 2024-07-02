@@ -54,6 +54,8 @@ protected:
   PvTable *table;
   static inline bool setDctor = false;
 
+  virtual void archiveData(){}
+
   static void setDeconstructor(dctor dt) {
     if(dt != nullptr){
     PvNode<Handle, dctor>::deconstructor = dt;

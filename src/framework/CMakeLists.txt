@@ -37,6 +37,8 @@ pv/PvBufferVma.cpp
 pv/PvShaderModule.cpp
 pv/PvCommandPool.cpp
 pv/PvCommandBuffers.cpp
+pv/PvFence.cpp
+pv/PvSemaphore.cpp
 
 
 window/GlfwWindow.cpp

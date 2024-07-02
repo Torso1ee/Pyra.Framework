@@ -40,7 +40,7 @@ public:
     init(info);
   }
 
-  PvImageView(PvTable *t, VkImageView v, ManageOperation op = MANUALLY_MANAGE);
+  PvImageView(PvTable *t, VkImageView v, ManageOperation op = AUTO_MANAGE);
 };
 
 } // namespace Pyra

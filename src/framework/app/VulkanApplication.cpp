@@ -8,6 +8,7 @@
 #include "pv/PvDevice.h"
 #include "pv/PvImage.h"
 #include "pv/PvImageView.h"
+#include "pv/PvSwapchain.h"
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
@@ -92,24 +93,22 @@ vkb::DispatchTable VulkanApplication::vkd() {
   }
 }
 
-void updateSwapchain(void *ptr, SwapchainData *data) {
-  auto app = static_cast<VulkanApplication *>(ptr);
-  for (auto &context : app->renderContexts) {
-    context->swapchainData = data;
-  }
+std::shared_ptr<PvSwapchain> VulkanApplication::swapchain() {
+  REPORT_COMPONENT(swapchain)
 }
 
-void VulkanApplication::registerEvent() {
-  swapchainUpdated += {static_cast<void *>(this), updateSwapchain};
-}
+void VulkanApplication::registerEvent() {}
 
 void VulkanApplication::preRun() {
   registerEvent();
   setUpBootstrap();
-  archiveSwapchainData();
-  for (auto context : renderContexts) {
-    context->init();
-  }
+  getQueue();
+
+  createRenderPass();
+  createPipeline();
+  createFramebuffers();
+  createCommandPool();
+  createCommandBuffers();
 }
 
 bool VulkanApplication::perFrame() { return true; }
@@ -126,7 +125,9 @@ void VulkanApplication::internalRun() {
 
 void VulkanApplication::recreateSwapchain() {
   bootstrap->createSwapchain();
-  archiveSwapchainData();
+  createFramebuffers();
+  createCommandPool();
+  createCommandBuffers();
 }
 
 void VulkanApplication::getQueue() {
@@ -160,27 +161,8 @@ void VulkanApplication::createCommandBuffers() {
   PvCommandBuffersAllocateInfo info{.commandPool = commandPool->handle,
                                     .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
                                     .commandBufferCount =
-                                        (uint32_t)swapchainData.images.size()};
+                                        (uint32_t)swapchain()->images.size()};
   commandBuffers = bootstrap->make<PvCommandBuffers>(info);
-
-}
-
-void VulkanApplication::archiveSwapchainData() {
-  auto images = bootstrap->table.swapchain.get_images().value();
-  auto imageViews = bootstrap->table.swapchain.get_image_views().value();
-  swapchainData.images.resize(images.size());
-  swapchainData.imageViews.resize(imageViews.size());
-  swapchainData.currentIndex = 0;
-  for (uint32_t i = 0; i < images.size(); i++) {
-    swapchainData.images[i] =
-        std::make_shared<PvImage>(&bootstrap->table, images[i]);
-  }
-  for (uint32_t i = 0; i < images.size(); i++) {
-    swapchainData.imageViews[i] =
-        std::make_shared<PvImageView>(&bootstrap->table, imageViews[i]);
-  }
-  swapchainData.swapchain = &bootstrap->table.swapchain;
-  swapchainUpdated.invoke(&swapchainData);
 }
 
 } // namespace Pyra

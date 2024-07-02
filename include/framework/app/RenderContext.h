@@ -1,52 +1,34 @@
 #pragma once
-#include "pv/PvCommandBuffers.h"
 #include "pv/PvCommon.h"
+#include "pv/PvFence.h"
 #include "pv/PvFramebuffer.h"
-#include "pv/PvPipeline.h"
-#include "pv/PvPipelineLayout.h"
-#include "pv/PvRenderPass.h"
+#include "pv/PvImage.h"
+#include "pv/PvImageView.h"
+#include "pv/PvSemaphore.h"
+#include <cstdint>
 #include <memory>
 #include <vector>
+
 namespace Pyra {
 
 struct SwapchainData;
 
-struct ContextData {
-  std::vector<std::shared_ptr<PvFramebuffer>> framebuffers;
-  std::shared_ptr<PvRenderPass> renderPass;
-  std::shared_ptr<PvPipeline> pipeline;
-  std::shared_ptr<PvPipelineLayout> pipelineLayout;
-  std::shared_ptr<PvCommandBuffers> commandBuffers;
-};
+class RenderContext {
+public:
+  std::vector<std::shared_ptr<PvSemaphore>> availableSemaphores;
+  std::vector<std::shared_ptr<PvSemaphore>> finishedSemaphores;
+  std::vector<std::shared_ptr<PvFence>> inFlightFences;
+  std::vector<std::shared_ptr<PvFence>> imageInFlight;
 
-class RenderContextBase {
+  uint32_t activeFrame;
 
-  friend class VulkanApplication;
-  friend void updateSwapchain(void *, SwapchainData *);
+  PvBootstrap *bootstrap;
 
-protected:
-  std::shared_ptr<PvBootstrap> bootstrap;
-  SwapchainData *swapchainData;
+  virtual void createSyncObjects();
 
-  virtual void createFramebuffers() {}
+  virtual void init(PvBootstrap *boot);
 
-  virtual void createRenderPass() {}
-
-  virtual void createPipeline() {}
-
-  virtual void createCommandPool() {}
-
-  virtual void createCommandBuffers() {}
-
-  virtual void createSyncObjects() {}
-
-private:
-  void init();
-};
-
-template <typename ContextData> class RenderContext : public RenderContextBase {
-protected:
-  ContextData contextData;
+  virtual bool nextFrame();
 };
 
 } // namespace Pyra

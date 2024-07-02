@@ -2,11 +2,14 @@
 #include "app/VulkanApplication.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
+#include "pv/PvFence.h"
 #include "pv/PvImageView.h"
 #include "pv/PvPipeline.h"
 #include "pv/PvPipelineLayout.h"
 #include "pv/PvRenderPass.h"
+#include "pv/PvSemaphore.h"
 #include "pv/PvShaderModule.h"
+#include "pv/PvSwapchain.h"
 #include "vulkan/vulkan_core.h"
 #include <cstdint>
 #include <memory>
@@ -16,7 +19,7 @@ using namespace Pyra;
 class Triangle : public VulkanApplication {
   void createRenderPass() override {
     CreateInfo<PvRenderPass> info{
-        .attachments = {{.format = swapchainData.swapchain->image_format,
+        .attachments = {{.format = swapchain()->imageFormat,
                          .samples = VK_SAMPLE_COUNT_1_BIT,
                          .loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
                          .storeOp = VK_ATTACHMENT_STORE_OP_STORE,
@@ -41,13 +44,13 @@ class Triangle : public VulkanApplication {
   }
 
   void createFramebuffers() override {
-    framebuffers.resize(swapchainData.images.size());
-    for (uint32_t i = 0; i < swapchainData.images.size(); i++) {
+    framebuffers.resize(swapchain()->images.size());
+    for (uint32_t i = 0; i < swapchain()->images.size(); i++) {
       CreateInfo<PvFramebuffer> info{
           .renderPass = renderPass->handle,
-          .attachments = {swapchainData.imageViews[i]->handle},
-          .width = swapchainData.swapchain->extent.width,
-          .height = swapchainData.swapchain->extent.height,
+          .attachments = {swapchain()->imageViews[i]->handle},
+          .width = swapchain()->extent.width,
+          .height = swapchain()->extent.height,
           .layers = 1};
       framebuffers[i] = bootstrap->make<PvFramebuffer>(info);
     }
@@ -89,14 +92,12 @@ class Triangle : public VulkanApplication {
         .viewportState =
             {.viewports = {{.x = 0.0f,
                             .y = 0.0f,
-                            .width =
-                                (float)swapchainData.swapchain->extent.width,
-                            .height =
-                                (float)swapchainData.swapchain->extent.height,
+                            .width = (float)swapchain()->extent.width,
+                            .height = (float)swapchain()->extent.height,
                             .minDepth = 0.0f,
                             .maxDepth = 1.0f}},
              .scissors = {{.offset = {.x = 0, .y = 0},
-                           .extent = swapchainData.swapchain->extent}},
+                           .extent = swapchain()->extent}},
              .required = true},
         .rasterizationState = {.depthClampEnable = VK_FALSE,
                                .rasterizerDiscardEnable = VK_FALSE,
@@ -126,12 +127,45 @@ class Triangle : public VulkanApplication {
         .renderPass = renderPass->handle,
         .subpass = 0,
         .basePipelineHandle = nullptr};
-   pipeline = bootstrap->make<PvPipeline>(info);
+    pipeline = bootstrap->make<PvPipeline>(info);
+  }
+
+  void createCommandBuffers() override {
+    VulkanApplication::createCommandBuffers();
+    for (uint32_t i = 0; i < commandBuffers->size(); i++) {
+      auto cmd = commandBuffers->get(i);
+      cmd.beginCommandBuffer({})
+          .setViewport(
+              {.firstViewport = 0,
+               .viewports = {{.x = 0.0f,
+                              .y = 0.0f,
+                              .width = (float)swapchain()->extent.width,
+                              .height = (float)swapchain()->extent.height,
+                              .minDepth = 0.0f,
+                              .maxDepth = 0.0f}}})
+          .setScissor(
+              {.firstScissor = 0,
+               .scissors = {{.offset = {0, 0}, .extent = swapchain()->extent}}})
+          .beginRenderPass(
+              {.renderPass = renderPass->handle,
+               .framebuffer = framebuffers[i]->handle,
+               .renderArea = {.offset = {0, 0}, .extent = swapchain()->extent},
+               .clearValues = {{{0.0f, 0.0f, 0.0f, 1.0f}}},
+               .subpassContents = VK_SUBPASS_CONTENTS_INLINE})
+          .bindPipeline({.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+                         .pipeline = pipeline->handle})
+          .draw({.vertexCount = 3,
+                 .instanceCount = 1,
+                 .firstVertex = 0,
+                 .firstInstance = 0})
+          .endRenderPass()
+          .endCommandBuffer();
+    }
   }
 };
 
 int main(int, char **) {
-  Triangle app;
-  app.run();
+  //   Triangle app;
+  //   app.run();
   return 0;
 }

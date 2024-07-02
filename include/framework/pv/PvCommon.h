@@ -60,7 +60,6 @@ struct QueueFamilyIndices {
 
 enum ManageOperation {
   AUTO_MANAGE,
-  MANUALLY_MANAGE,
   DO_NOT_MANAGE,
 };
 
