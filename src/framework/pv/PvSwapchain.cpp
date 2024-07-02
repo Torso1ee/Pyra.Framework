@@ -1,9 +1,10 @@
 #include "pv/PvSwapchain.h"
+#include "core/Core.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
 #include "pv/PvImage.h"
 #include "pv/PvImageView.h"
-#include "core/Core.h"
+#include "vulkan/vulkan_core.h"
 #include <cstdint>
 #include <memory>
 
@@ -79,6 +80,11 @@ void PvSwapchain::archiveData() {
   } else {
     // TODO
   }
+}
+
+VkResult PvSwapchain::acquireNextImageKHR(uint32_t *index, VkSemaphore sema,
+                                          VkFence fence, uint64_t timeout) {
+  return table->disp.acquireNextImageKHR(handle, timeout, sema, fence, index);
 }
 
 } // namespace Pyra

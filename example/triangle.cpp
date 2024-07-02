@@ -154,7 +154,7 @@ class Triangle : public VulkanApplication {
 };
 
 int main(int, char **) {
-  //   Triangle app;
-  //   app.run();
+  Triangle app;
+  app.run();
   return 0;
 }

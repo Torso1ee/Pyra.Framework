@@ -1,6 +1,7 @@
 #pragma once
 #include "pv/PvCommon.h"
 #include "pv/PvResource.h"
+#include "vulkan/vulkan_core.h"
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -56,7 +57,12 @@ public:
 
   PvSwapchain(PvTable *, ManageOperation op = AUTO_MANAGE);
 
-  void archiveData() override ;
+  void archiveData() override;
+
+  VkResult acquireNextImageKHR(uint32_t* imageIndex,
+                               VkSemaphore sema = VK_NULL_HANDLE,
+                               VkFence fence = VK_NULL_HANDLE,
+                               uint64_t timeout = UINT64_MAX);
 
   std::vector<std::shared_ptr<PvImage>> images;
 

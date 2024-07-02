@@ -82,7 +82,7 @@ private:
 struct PvCommandBuffer {
 
   PvTable *table;
-  VkCommandBuffer commandBuffer;
+  VkCommandBuffer handle;
 
   PvCommandBuffer &beginCommandBuffer(BeginCommandBufferInfo info);
 
@@ -114,7 +114,7 @@ public:
   }
 
   PvCommandBuffer get(uint32_t i) {
-    return {.table = table, .commandBuffer = commandBuffers->at(i)};
+    return {.table = table, .handle = commandBuffers->at(i)};
   }
 
   size_t size() { return commandBuffers->size(); }

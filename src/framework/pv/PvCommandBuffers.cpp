@@ -56,19 +56,19 @@ void RenderPassBeginInfo::assign() {
 PvCommandBuffer &
 PvCommandBuffer::beginCommandBuffer(BeginCommandBufferInfo info) {
   info.assign();
-  table->disp.beginCommandBuffer(commandBuffer, &info.info);
+  table->disp.beginCommandBuffer(handle, &info.info);
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::setViewport(SetViewportInfo info) {
-  table->disp.cmdSetViewport(commandBuffer, info.firstViewport,
+  table->disp.cmdSetViewport(handle, info.firstViewport,
                              info.viewports.size(),
                              NULLPTR_IF_EMPTY(info.viewports));
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::setScissor(SetScissorInfo info) {
-  table->disp.cmdSetScissor(commandBuffer, info.firstScissor,
+  table->disp.cmdSetScissor(handle, info.firstScissor,
                             info.scissors.size(),
                             NULLPTR_IF_EMPTY(info.scissors));
   return *this;
@@ -76,30 +76,30 @@ PvCommandBuffer &PvCommandBuffer::setScissor(SetScissorInfo info) {
 
 PvCommandBuffer &PvCommandBuffer::beginRenderPass(RenderPassBeginInfo info) {
   info.assign();
-  table->disp.cmdBeginRenderPass(commandBuffer, &info.info,
+  table->disp.cmdBeginRenderPass(handle, &info.info,
                                  info.subpassContents);
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::bindPipeline(BindPipelineInfo info) {
-  table->disp.cmdBindPipeline(commandBuffer, info.pipelineBindPoint,
+  table->disp.cmdBindPipeline(handle, info.pipelineBindPoint,
                               info.pipeline);
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::draw(DrawInfo info) {
-  table->disp.cmdDraw(commandBuffer, info.vertexCount, info.instanceCount,
+  table->disp.cmdDraw(handle, info.vertexCount, info.instanceCount,
                       info.firstVertex, info.instanceCount);
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::endRenderPass() {
-  table->disp.cmdEndRenderPass(commandBuffer);
+  table->disp.cmdEndRenderPass(handle);
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::endCommandBuffer() {
-  table->disp.endCommandBuffer(commandBuffer);
+  table->disp.endCommandBuffer(handle);
   return *this;
 }
 

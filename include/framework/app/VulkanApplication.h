@@ -1,8 +1,7 @@
 #pragma once
-#include "pv/Pv.h"
-#include "VkBootstrapDispatch.h"
 #include "app/ApplicationBase.h"
-#include "app/RenderContext.h"
+#include "pv/Pv.h"
+#include <cstdint>
 #include <memory>
 #include <vector>
 
@@ -16,20 +15,20 @@ class PvPhysicalDevice;
 class PvSurface;
 class PvDevice;
 struct Queues {
-  PvQueue graphics;
-  PvQueue compute;
-  PvQueue present;
-  PvQueue transfer;
+  std::shared_ptr<PvQueue> graphics;
+  std::shared_ptr<PvQueue> compute;
+  std::shared_ptr<PvQueue> present;
+  std::shared_ptr<PvQueue> transfer;
 };
 
-void updateSwapchain(void *, SwapchainData *);
 class VulkanApplication : public ApplicationBase {
 
-public:
-
-  friend void updateSwapchain(void *, SwapchainData *);
-
 protected:
+  struct Setting {
+    uint32_t maxFramesInFlight = 2;
+    const char *applicationName = "Pyra";
+  } setting;
+
   std::shared_ptr<PvBootstrap> bootstrap = std::make_shared<PvBootstrap>();
   Queues queues;
   std::shared_ptr<PvCommandPool> commandPool;
@@ -38,8 +37,17 @@ protected:
   std::vector<std::shared_ptr<PvFramebuffer>> framebuffers;
   std::shared_ptr<PvPipelineLayout> pipelineLayout;
   std::shared_ptr<PvPipeline> pipeline;
+  std::vector<std::shared_ptr<PvSemaphore>> availableSemaphores;
+  std::vector<std::shared_ptr<PvSemaphore>> finishedSemaphores;
+  std::vector<std::shared_ptr<PvFence>> inFlightFences;
+  uint32_t activeFrame = 0;
+  bool framebufferResized = false;
+
+  virtual void createSyncObjects();
 
   virtual void setUpBootstrap();
+
+  virtual void configure();
 
   virtual void recreateSwapchain();
 
@@ -53,11 +61,7 @@ protected:
 
   virtual void createCommandBuffers();
 
-  virtual void createSyncObject() {}
-
   virtual void createFramebuffers() = 0;
-
-  virtual void createSyncObjects() = 0;
 
   virtual bool perFrame();
 
@@ -72,8 +76,6 @@ protected:
   std::shared_ptr<PvPhysicalDevice> physicalDevice();
   std::shared_ptr<PvDevice> device();
   std::shared_ptr<PvSurface> surface();
-  vkb::InstanceDispatchTable &vk();
-  vkb::DispatchTable vkd();
   std::shared_ptr<PvSwapchain> swapchain();
 };
 

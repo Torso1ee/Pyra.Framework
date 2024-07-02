@@ -10,7 +10,6 @@ target_sources(${PROJECT_NAME} PUBLIC
 
 app/ApplicationBase.cpp
 app/VulkanApplication.cpp
-app/RenderContext.cpp
 
 core/logging.cpp
 core/GlslCompiler.cpp
@@ -39,6 +38,7 @@ pv/PvCommandPool.cpp
 pv/PvCommandBuffers.cpp
 pv/PvFence.cpp
 pv/PvSemaphore.cpp
+pv/PvQueue.cpp
 
 
 window/GlfwWindow.cpp

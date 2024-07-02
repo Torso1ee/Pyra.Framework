@@ -1,10 +1,12 @@
 #include "pv/PvBootstrap.h"
 #include "VkBootstrap.h"
+#include "core/GlslCompiler.h"
 #include "core/logging.h"
 #include "pv/PvCommon.h"
 #include "pv/PvDebugUtilsMessenger.h"
 #include "pv/PvDevice.h"
 #include "pv/PvPhysicalDevice.h"
+#include "pv/PvQueue.h"
 #include "pv/PvShaderModule.h"
 #include "pv/PvSurface.h"
 #include "pv/PvSwapchain.h"
@@ -12,7 +14,6 @@
 #include "window/GlfwWindow.h"
 #include <memory>
 #include <volk.h>
-#include "core/GlslCompiler.h"
 
 namespace Pyra {
 
@@ -137,11 +138,27 @@ bool PvBootstrap::createSwapchain() {
   return true;
 }
 
-std::shared_ptr<PvShaderModule> PvBootstrap::createShaderModule(const char *code,
-                                            shaderc_shader_kind kind) {
+std::shared_ptr<PvShaderModule>
+PvBootstrap::createShaderModule(const char *code, shaderc_shader_kind kind) {
   CreateInfo<PvShaderModule> info{};
   GlslCompiler::Compile(code, kind, info.codes);
   return make<PvShaderModule>(info);
+}
+
+std::shared_ptr<PvQueue> PvBootstrap::getQueue(vkb::QueueType type) {
+  if (table.device.device != nullptr && table.device.surface != nullptr) {
+    auto gq = table.device.get_queue(type);
+    INFO("get {} queue", typeid((type)).name());
+    if (!gq.has_value()) {
+      ERROR("failed to get queue");
+      throw std::runtime_error("failed to get queue");
+    }
+    return std::make_shared<PvQueue>(
+        &table, table.device.get_queue_index(type).value(), gq.value());
+  } else {
+    // TODO
+    throw;
+  }
 }
 
 } // namespace Pyra

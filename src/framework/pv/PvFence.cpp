@@ -1,7 +1,7 @@
 #include "pv/PvFence.h"
+#include "core/Core.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "core/Core.h"
 #include <cstdint>
 #include <volk.h>
 
@@ -31,5 +31,7 @@ bool PvFence::init(PvFenceCreateInfo &info) {
 VkResult PvFence::wait() {
   return table->disp.waitForFences(1, &handle, VK_TRUE, UINT64_MAX);
 }
+
+VkResult PvFence::reset() { return table->disp.resetFences(1, &handle); }
 
 } // namespace Pyra

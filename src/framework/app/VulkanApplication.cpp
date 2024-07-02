@@ -1,17 +1,9 @@
 #include "app/VulkanApplication.h"
-#include "app/RenderContext.h"
-#include "core/logging.h"
-#include "pv/PvBootstrap.h"
-#include "pv/PvCommandBuffers.h"
-#include "pv/PvCommandPool.h"
-#include "pv/PvCommon.h"
-#include "pv/PvDevice.h"
-#include "pv/PvImage.h"
-#include "pv/PvImageView.h"
-#include "pv/PvSwapchain.h"
+#include "pv/PvQueue.h"
 #include <cstdint>
 #include <memory>
 #include <stdexcept>
+#include <vulkan/vulkan_core.h>
 
 #define REPORT_COMPONENT(component)                                            \
   if (bootstrap->init.component != nullptr)                                    \
@@ -32,6 +24,8 @@ customDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
   INFO("validation layer: {}", pCallbackData->pMessage);
   return VK_TRUE;
 }
+
+void VulkanApplication::configure() {}
 
 void VulkanApplication::setUpBootstrap() {
   bootstrap
@@ -73,26 +67,6 @@ std::shared_ptr<PvDevice> VulkanApplication::device(){REPORT_COMPONENT(device)}
 std::shared_ptr<PvSurface> VulkanApplication::surface(){
     REPORT_COMPONENT(surface)}
 
-vkb::InstanceDispatchTable &VulkanApplication::vk() {
-  if (bootstrap->table.inst_disp.is_populated())
-    return bootstrap->table.inst_disp;
-  else {
-    auto message = "instance function set up failed!";
-    ERROR(message)
-    throw std::runtime_error(message);
-  }
-}
-
-vkb::DispatchTable VulkanApplication::vkd() {
-  if (bootstrap->table.disp.is_populated())
-    return bootstrap->table.disp;
-  else {
-    auto message = "device function set up failed!";
-    ERROR(message)
-    throw std::runtime_error(message);
-  }
-}
-
 std::shared_ptr<PvSwapchain> VulkanApplication::swapchain() {
   REPORT_COMPONENT(swapchain)
 }
@@ -109,15 +83,49 @@ void VulkanApplication::preRun() {
   createFramebuffers();
   createCommandPool();
   createCommandBuffers();
+  createSyncObjects();
 }
 
-bool VulkanApplication::perFrame() { return true; }
+bool VulkanApplication::perFrame() {
+  inFlightFences[activeFrame]->wait();
+  auto result = bootstrap->init.swapchain->acquireNextImageKHR(
+      &activeFrame, availableSemaphores[activeFrame]->handle);
+  if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+    return false;
+  } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    throw std::runtime_error("failed to acquire swapchain image. Error ");
+  }
+
+  inFlightFences[activeFrame].reset();
+  SubmitInfo submitInfo{
+      .submitInfos =
+          {{.waitSemaphores = {availableSemaphores[activeFrame]->handle},
+            .waitDstStageMask = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT},
+            .commandBuffers = {commandBuffers->get(0).handle},
+            .signalSemaphores = {finishedSemaphores[activeFrame]->handle}}},
+      .fence = inFlightFences[activeFrame]->handle};
+  if (queues.graphics->submit(submitInfo) != VK_SUCCESS) {
+    throw std::runtime_error("failed to submit draw command buffer");
+  }
+  PvPresentInfo presentInfo{
+
+  };
+  result = queues.present->present(presentInfo);
+  if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)
+    return false;
+  else if (result != VK_SUCCESS) {
+    throw std::runtime_error("failed to present swapchain image. Error");
+  }
+  activeFrame = (activeFrame + 1) % setting.maxFramesInFlight;
+  return true;
+}
 
 void VulkanApplication::internalRun() {
   if (device() != nullptr && window() != nullptr) {
     while (!window()->shouldClose()) {
       window()->pollEvent();
-      perFrame();
+      if (!perFrame() || framebufferResized)
+        recreateSwapchain();
     }
     device()->WaitIdle();
   }
@@ -131,29 +139,12 @@ void VulkanApplication::recreateSwapchain() {
 }
 
 void VulkanApplication::getQueue() {
-  auto gq = bootstrap->table.device.get_queue(vkb::QueueType::graphics);
-  if (!gq.has_value()) {
-    ERROR("failed to get graphics queue");
-    throw std::runtime_error("failed to get graphics queue");
-  }
-
-  auto pq = bootstrap->table.device.get_queue(vkb::QueueType::present);
-  if (!pq.has_value()) {
-    ERROR("failed to get present queue");
-    throw std::runtime_error("failed to get present queue");
-  };
-  queues = {.graphics = {.queue = gq.value(),
-                         .index = bootstrap->table.device
-                                      .get_queue_index(vkb::QueueType::graphics)
-                                      .value()},
-            .present = {.queue = pq.value(),
-                        .index = bootstrap->table.device
-                                     .get_queue_index(vkb::QueueType::present)
-                                     .value()}};
+  queues.graphics = bootstrap->getQueue(vkb::QueueType::graphics),
+  queues.present = bootstrap->getQueue(vkb::QueueType::present);
 }
 
 void VulkanApplication::createCommandPool() {
-  PvCommandPoolCreateInfo info{.queueFamilyIndex = queues.present.index};
+  PvCommandPoolCreateInfo info{.queueFamilyIndex = queues.present->index};
   commandPool = bootstrap->make<PvCommandPool>(info);
 }
 
@@ -163,6 +154,18 @@ void VulkanApplication::createCommandBuffers() {
                                     .commandBufferCount =
                                         (uint32_t)swapchain()->images.size()};
   commandBuffers = bootstrap->make<PvCommandBuffers>(info);
+}
+
+void VulkanApplication::createSyncObjects() {
+  availableSemaphores.resize(setting.maxFramesInFlight);
+  finishedSemaphores.resize(setting.maxFramesInFlight);
+  inFlightFences.resize(setting.maxFramesInFlight);
+  for (uint32_t i = 0; i < setting.maxFramesInFlight; i++) {
+    availableSemaphores[i] = bootstrap->make<PvSemaphore>({});
+    finishedSemaphores[i] = bootstrap->make<PvSemaphore>({});
+    inFlightFences[i] =
+        bootstrap->make<PvFence>({.flags = VK_FENCE_CREATE_SIGNALED_BIT});
+  }
 }
 
 } // namespace Pyra

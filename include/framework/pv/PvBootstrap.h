@@ -16,6 +16,7 @@ class PvSwapchain;
 class PvDebugUtilsMessenger;
 class WindowBase;
 class PvShaderModule;
+class PvQueue;
 
 struct PbBootstrapCreateInfo {
   bool needSurface;
@@ -74,6 +75,8 @@ public:
 
   PvBootstrap *withSwapchainBuilder(fp_swapchain_setting builder);
 
+  std::shared_ptr<PvQueue> getQueue(vkb::QueueType);
+
   template <typename Window> PvBootstrap *withWindow() {
     init.window = std::make_shared<Window>();
     return this;
@@ -113,6 +116,7 @@ private:
   bool createSwapchain();
 
   PvTable table;
+
 
 };
 

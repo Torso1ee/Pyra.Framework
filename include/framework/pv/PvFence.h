@@ -33,6 +33,8 @@ public:
   }
 
   VkResult wait();
+
+  VkResult reset();
 };
 
 } // namespace Pyra
