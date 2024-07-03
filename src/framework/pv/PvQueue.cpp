@@ -7,14 +7,6 @@
 
 namespace Pyra {
 
-uint32_t waitSemaphoreCount;
-const VkSemaphore *pWaitSemaphores;
-const VkPipelineStageFlags *pWaitDstStageMask;
-uint32_t commandBufferCount;
-const VkCommandBuffer *pCommandBuffers;
-uint32_t signalSemaphoreCount;
-const VkSemaphore *pSignalSemaphores;
-
 void PvSubmitInfo::assign() {
   info = {.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
           .waitSemaphoreCount = (uint32_t)waitSemaphores.size(),

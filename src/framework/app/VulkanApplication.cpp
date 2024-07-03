@@ -84,7 +84,6 @@ void VulkanApplication::registerEvent() {
 void VulkanApplication::preRun() {
   setUpBootstrap();
   getQueue();
-
   createRenderPass();
   createPipeline();
   createFramebuffers();
