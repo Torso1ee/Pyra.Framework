@@ -128,6 +128,7 @@ void PvBootstrap::build() {
 
 bool PvBootstrap::createSwapchain() {
   vkb::SwapchainBuilder swapchain_builder{table.device};
+  swapchain_setting(swapchain_builder);
   auto swap_ret = swapchain_builder.set_old_swapchain(table.swapchain).build();
   if (!swap_ret) {
     ERROR(swap_ret.error().message());

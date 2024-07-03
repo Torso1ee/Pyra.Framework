@@ -1,4 +1,5 @@
 #include "app/VulkanApplication.h"
+#include "core/logging.h"
 #include "pv/PvQueue.h"
 #include <cstdint>
 #include <memory>
@@ -103,13 +104,13 @@ bool VulkanApplication::perFrame() {
   } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
     throw std::runtime_error("failed to acquire swapchain image. Error ");
   }
-
+  recordCommandBuffer(imageIndex);
   inFlightFences[activeFrame]->reset();
   SubmitInfo submitInfo{
       .submitInfos =
           {{.waitSemaphores = {availableSemaphores[activeFrame]->handle},
             .waitDstStageMask = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT},
-            .commandBuffers = {commandBuffers->get(imageIndex).handle},
+            .commandBuffers = {commandBuffers->get(activeFrame).handle},
             .signalSemaphores = {finishedSemaphores[activeFrame]->handle}}},
       .fence = inFlightFences[activeFrame]->handle};
   if (queues.graphics->submit(submitInfo) != VK_SUCCESS) {
@@ -142,10 +143,15 @@ void VulkanApplication::internalRun() {
 }
 
 void VulkanApplication::recreateSwapchain() {
+  auto extent = window()->getExtent();
+  while (extent.width == 0 || extent.height == 0) {
+    extent = window()->getExtent();
+    window()->waitEvent();
+  }
+  device()->WaitIdle();
   bootstrap->createSwapchain();
   createFramebuffers();
-  createCommandPool();
-  createCommandBuffers();
+  framebufferResized = false;
 }
 
 void VulkanApplication::getQueue() {
@@ -154,7 +160,9 @@ void VulkanApplication::getQueue() {
 }
 
 void VulkanApplication::createCommandPool() {
-  PvCommandPoolCreateInfo info{.queueFamilyIndex = queues.present->index};
+  PvCommandPoolCreateInfo info{
+      .flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT,
+      .queueFamilyIndex = queues.present->index};
   commandPool = bootstrap->make<PvCommandPool>(info);
 }
 
@@ -162,7 +170,7 @@ void VulkanApplication::createCommandBuffers() {
   PvCommandBuffersAllocateInfo info{.commandPool = commandPool->handle,
                                     .level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
                                     .commandBufferCount =
-                                        (uint32_t)swapchain()->images.size()};
+                                        setting.maxFramesInFlight};
   commandBuffers = bootstrap->make<PvCommandBuffers>(info);
 }
 

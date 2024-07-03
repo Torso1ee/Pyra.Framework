@@ -119,37 +119,35 @@ class Triangle : public VulkanApplication {
     pipeline = bootstrap->make<PvPipeline>(info);
   }
 
-  void createCommandBuffers() override {
-    VulkanApplication::createCommandBuffers();
-    for (uint32_t i = 0; i < commandBuffers->size(); i++) {
-      auto cmd = commandBuffers->get(i);
-      cmd.beginCommandBuffer({})
-          .setViewport(
-              {.firstViewport = 0,
-               .viewports = {{.x = 0.0f,
-                              .y = 0.0f,
-                              .width = (float)swapchain()->extent.width,
-                              .height = (float)swapchain()->extent.height,
-                              .minDepth = 0.0f,
-                              .maxDepth = 0.0f}}})
-          .setScissor(
-              {.firstScissor = 0,
-               .scissors = {{.offset = {0, 0}, .extent = swapchain()->extent}}})
-          .beginRenderPass(
-              {.renderPass = renderPass->handle,
-               .framebuffer = framebuffers[i]->handle,
-               .renderArea = {.offset = {0, 0}, .extent = swapchain()->extent},
-               .clearValues = {{{0.0f, 0.0f, 0.0f, 1.0f}}},
-               .subpassContents = VK_SUBPASS_CONTENTS_INLINE})
-          .bindPipeline({.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
-                         .pipeline = pipeline->handle})
-          .draw({.vertexCount = 3,
-                 .instanceCount = 1,
-                 .firstVertex = 0,
-                 .firstInstance = 0})
-          .endRenderPass()
-          .endCommandBuffer();
-    }
+  void recordCommandBuffer(uint32_t imageIndex) override {
+    auto cmd = commandBuffers->get(activeFrame);
+    cmd.reset()
+        .beginCommandBuffer({})
+        .setViewport(
+            {.firstViewport = 0,
+             .viewports = {{.x = 0.0f,
+                            .y = 0.0f,
+                            .width = (float)swapchain()->extent.width,
+                            .height = (float)swapchain()->extent.height,
+                            .minDepth = 0.0f,
+                            .maxDepth = 0.0f}}})
+        .setScissor(
+            {.firstScissor = 0,
+             .scissors = {{.offset = {0, 0}, .extent = swapchain()->extent}}})
+        .beginRenderPass(
+            {.renderPass = renderPass->handle,
+             .framebuffer = framebuffers[imageIndex]->handle,
+             .renderArea = {.offset = {0, 0}, .extent = swapchain()->extent},
+             .clearValues = {{{0.0f, 0.0f, 0.0f, 1.0f}}},
+             .subpassContents = VK_SUBPASS_CONTENTS_INLINE})
+        .bindPipeline({.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
+                       .pipeline = pipeline->handle})
+        .draw({.vertexCount = 3,
+               .instanceCount = 1,
+               .firstVertex = 0,
+               .firstInstance = 0})
+        .endRenderPass()
+        .endCommandBuffer();
   }
 };
 

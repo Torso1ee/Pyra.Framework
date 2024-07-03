@@ -84,6 +84,8 @@ struct PvCommandBuffer {
   PvTable *table;
   VkCommandBuffer handle;
 
+  PvCommandBuffer &reset(VkCommandBufferResetFlags flag = 0);
+
   PvCommandBuffer &beginCommandBuffer(BeginCommandBufferInfo info);
 
   PvCommandBuffer &setViewport(SetViewportInfo info);

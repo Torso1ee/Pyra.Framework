@@ -1,7 +1,7 @@
 #include "pv/PvCommandBuffers.h"
+#include "core/Core.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "core/Core.h"
 #include <cstdint>
 #include <vector>
 #include <volk.h>
@@ -61,30 +61,31 @@ PvCommandBuffer::beginCommandBuffer(BeginCommandBufferInfo info) {
   return *this;
 }
 
+PvCommandBuffer &PvCommandBuffer::reset(VkCommandBufferResetFlags flag) {
+  table->disp.resetCommandBuffer(handle, flag);
+  return *this;
+}
+
 PvCommandBuffer &PvCommandBuffer::setViewport(SetViewportInfo info) {
-  table->disp.cmdSetViewport(handle, info.firstViewport,
-                             info.viewports.size(),
+  table->disp.cmdSetViewport(handle, info.firstViewport, info.viewports.size(),
                              NULLPTR_IF_EMPTY(info.viewports));
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::setScissor(SetScissorInfo info) {
-  table->disp.cmdSetScissor(handle, info.firstScissor,
-                            info.scissors.size(),
+  table->disp.cmdSetScissor(handle, info.firstScissor, info.scissors.size(),
                             NULLPTR_IF_EMPTY(info.scissors));
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::beginRenderPass(RenderPassBeginInfo info) {
   info.assign();
-  table->disp.cmdBeginRenderPass(handle, &info.info,
-                                 info.subpassContents);
+  table->disp.cmdBeginRenderPass(handle, &info.info, info.subpassContents);
   return *this;
 }
 
 PvCommandBuffer &PvCommandBuffer::bindPipeline(BindPipelineInfo info) {
-  table->disp.cmdBindPipeline(handle, info.pipelineBindPoint,
-                              info.pipeline);
+  table->disp.cmdBindPipeline(handle, info.pipelineBindPoint, info.pipeline);
   return *this;
 }
 

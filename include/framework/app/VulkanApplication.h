@@ -63,6 +63,8 @@ protected:
 
   virtual void createCommandBuffers();
 
+  virtual void recordCommandBuffer(uint32_t imageIndex) = 0;
+
   virtual void createFramebuffers() = 0;
 
   virtual bool perFrame();
