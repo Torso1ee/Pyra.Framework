@@ -49,6 +49,7 @@ void RenderPassBeginInfo::assign() {
   info = {.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
           .renderPass = renderPass,
           .framebuffer = framebuffer,
+          .renderArea = renderArea,
           .clearValueCount = (uint32_t)clearValues.size(),
           .pClearValues = NULLPTR_IF_EMPTY(clearValues)};
 }

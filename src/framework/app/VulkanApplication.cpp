@@ -16,6 +16,11 @@
 
 namespace Pyra {
 
+static void framebufferResizeCallback(void *data, ResizedEventArgs args) {
+  auto app = reinterpret_cast<VulkanApplication *>(data);
+  app->framebufferResized = true;
+}
+
 VKAPI_ATTR VkBool32 VKAPI_CALL
 customDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
                     VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -71,10 +76,11 @@ std::shared_ptr<PvSwapchain> VulkanApplication::swapchain() {
   REPORT_COMPONENT(swapchain)
 }
 
-void VulkanApplication::registerEvent() {}
+void VulkanApplication::registerEvent() {
+  window()->resized += {static_cast<void *>(this), framebufferResizeCallback};
+}
 
 void VulkanApplication::preRun() {
-  registerEvent();
   setUpBootstrap();
   getQueue();
 
@@ -84,31 +90,35 @@ void VulkanApplication::preRun() {
   createCommandPool();
   createCommandBuffers();
   createSyncObjects();
+  registerEvent();
 }
 
 bool VulkanApplication::perFrame() {
   inFlightFences[activeFrame]->wait();
+  uint32_t imageIndex;
   auto result = bootstrap->init.swapchain->acquireNextImageKHR(
-      &activeFrame, availableSemaphores[activeFrame]->handle);
+      &imageIndex, availableSemaphores[activeFrame]->handle);
   if (result == VK_ERROR_OUT_OF_DATE_KHR) {
     return false;
   } else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
     throw std::runtime_error("failed to acquire swapchain image. Error ");
   }
 
-  inFlightFences[activeFrame].reset();
+  inFlightFences[activeFrame]->reset();
   SubmitInfo submitInfo{
       .submitInfos =
           {{.waitSemaphores = {availableSemaphores[activeFrame]->handle},
             .waitDstStageMask = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT},
-            .commandBuffers = {commandBuffers->get(0).handle},
+            .commandBuffers = {commandBuffers->get(imageIndex).handle},
             .signalSemaphores = {finishedSemaphores[activeFrame]->handle}}},
       .fence = inFlightFences[activeFrame]->handle};
   if (queues.graphics->submit(submitInfo) != VK_SUCCESS) {
     throw std::runtime_error("failed to submit draw command buffer");
   }
   PvPresentInfo presentInfo{
-
+      .waitSemaphores = {finishedSemaphores[activeFrame]->handle},
+      .swapchains = {swapchain()->handle},
+      .imageIndices = {imageIndex},
   };
   result = queues.present->present(presentInfo);
   if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR)

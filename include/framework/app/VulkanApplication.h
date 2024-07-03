@@ -23,6 +23,9 @@ struct Queues {
 
 class VulkanApplication : public ApplicationBase {
 
+public:
+  bool framebufferResized = false;
+
 protected:
   struct Setting {
     uint32_t maxFramesInFlight = 2;
@@ -41,7 +44,6 @@ protected:
   std::vector<std::shared_ptr<PvSemaphore>> finishedSemaphores;
   std::vector<std::shared_ptr<PvFence>> inFlightFences;
   uint32_t activeFrame = 0;
-  bool framebufferResized = false;
 
   virtual void createSyncObjects();
 
