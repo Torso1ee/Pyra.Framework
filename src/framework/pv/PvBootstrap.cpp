@@ -11,6 +11,8 @@
 #include "pv/PvSurface.h"
 #include "pv/PvSwapchain.h"
 #include "pv/pvInstance.h"
+#include "vk_mem_alloc.h"
+#include "vulkan/vulkan_core.h"
 #include "window/GlfwWindow.h"
 #include <memory>
 #include <volk.h>
@@ -63,6 +65,11 @@ PvBootstrap::withSwapchainBuilder(PvBootstrap::fp_swapchain_setting builder) {
   return this;
 }
 
+PvBootstrap *PvBootstrap::withVmaAllocator(fp_vmaAllocator_setting setting) {
+  vmaAllocator_setting = setting;
+  return this;
+}
+
 PvBootstrap *PvBootstrap::withWindow() { return withWindow<GlfwWindow>(); }
 
 void PvBootstrap::build() {
@@ -97,6 +104,27 @@ void PvBootstrap::build() {
                 table.device = device_ret.value();
                 table.disp = table.device.make_table();
                 init.device = std::make_shared<PvDevice>(&table);
+
+                VmaVulkanFunctions vulkanFunctions = {
+                    .vkGetInstanceProcAddr =
+                        table.instance.fp_vkGetInstanceProcAddr,
+                    .vkGetDeviceProcAddr = table.device.fp_vkGetDeviceProcAddr,
+                };
+                VmaAllocatorCreateInfo info{
+                    .flags = VMA_ALLOCATOR_CREATE_EXT_MEMORY_BUDGET_BIT,
+                    .physicalDevice = init.physicalDevice->handle,
+                    .device = init.device->handle,
+                    .pVulkanFunctions = &vulkanFunctions,
+                    .instance = init.instance->handle,
+                    .vulkanApiVersion = VK_API_VERSION_1_0,
+                };
+
+                if (vmaAllocator_setting != nullptr)
+                  vmaAllocator_setting(&table, info);
+                if (vmaCreateAllocator(&info, &table.allocator) != VK_SUCCESS) {
+                  ERROR("allocator creation failed!");
+                }
+
                 if (swapchain_setting != nullptr) {
                   createSwapchain();
                 }

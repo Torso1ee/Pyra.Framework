@@ -1,10 +1,11 @@
 #pragma once
 #include <VkBootstrap.h>
 #include <memory>
+#include <optional>
 #include <pv/PvCommon.h>
+#include <shaderc/shaderc.h>
 #include <vk_mem_alloc.h>
 #include <volk.h>
-#include <shaderc/shaderc.h>
 
 namespace Pyra {
 
@@ -48,9 +49,11 @@ public:
     std::shared_ptr<PvSwapchain> swapchain;
   } init;
 
-
   using fp_surface_construct = VkSurfaceKHR (*)(VkInstance,
                                                 std::shared_ptr<WindowBase>);
+
+  using fp_vmaAllocator_setting = void (*)(PvTable *table,
+                                           VmaAllocatorCreateInfo &info);
 
   using fp_instance_setting = void (*)(vkb::InstanceBuilder &builder);
 
@@ -75,6 +78,8 @@ public:
 
   PvBootstrap *withSwapchainBuilder(fp_swapchain_setting builder);
 
+  PvBootstrap *withVmaAllocator(fp_vmaAllocator_setting setting);
+
   std::shared_ptr<PvQueue> getQueue(vkb::QueueType);
 
   template <typename Window> PvBootstrap *withWindow() {
@@ -98,7 +103,7 @@ public:
   }
 
   std::shared_ptr<PvShaderModule> createShaderModule(const char *code,
-                                            shaderc_shader_kind kind) ;
+                                                     shaderc_shader_kind kind);
 
   friend VulkanApplication;
 
@@ -113,11 +118,11 @@ private:
 
   fp_swapchain_setting swapchain_setting = nullptr;
 
+  fp_vmaAllocator_setting vmaAllocator_setting = nullptr;
+
   bool createSwapchain();
 
   PvTable table;
-
-
 };
 
 } // namespace Pyra
