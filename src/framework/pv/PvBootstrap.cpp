@@ -87,6 +87,7 @@ void PvBootstrap::build() {
         }
         volkLoadInstance(table.instance.instance);
         vkb::PhysicalDeviceSelector selector{table.instance};
+        physicalDevice_setting(selector);
         if (surface_construct != nullptr) {
           auto surface = surface_construct(table.instance, init.window);
           init.surface = std::make_shared<PvSurface>(&table, surface);
