@@ -1,4 +1,3 @@
-#pragma once
 #include "pv/PvDebugUtilsMessenger.h"
 #include "core/Core.h"
 #include "pv/PvBootstrap.h"

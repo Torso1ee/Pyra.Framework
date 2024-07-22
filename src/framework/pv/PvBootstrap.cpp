@@ -10,9 +10,7 @@
 #include "pv/PvShaderModule.h"
 #include "pv/PvSurface.h"
 #include "pv/PvSwapchain.h"
-#include "pv/pvInstance.h"
-#include "vk_mem_alloc.h"
-#include "vulkan/vulkan_core.h"
+#include "pv/PvInstance.h"
 #include "window/GlfwWindow.h"
 #include <memory>
 #include <volk.h>

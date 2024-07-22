@@ -3,8 +3,10 @@
 #define NOGDI
 #include "PvResource.h"
 #include "window/WindowBase.h"
+#if WIN32
 #include <vulkan/vulkan_win32.h>
 #include <windows.h>
+#endif
 
 namespace Pyra {
 
@@ -33,6 +35,7 @@ private:
   void assign();
 };
 
+#if WIN32
 struct PvWin32SurfaceCreateInfoKHR
     : PvInfo<VkWin32SurfaceCreateInfoKHR, PvSurface> {
   VkWin32SurfaceCreateFlagsKHR flags;
@@ -45,7 +48,7 @@ struct PvWin32SurfaceCreateInfoKHR
 private:
   void assign();
 };
-
+#endif
 struct PvHeadlessSurfaceCreateInfoEXT
     : PvInfo<VkHeadlessSurfaceCreateInfoEXT, PvSurface> {
   VkHeadlessSurfaceCreateFlagsEXT flags;
@@ -73,7 +76,8 @@ public:
     (info + ... + infos);
     init(info);
   };
-
+  
+#if WIN32
   bool init(PvWin32SurfaceCreateInfoKHR &info);
 
   template <typename... T>
@@ -82,6 +86,7 @@ public:
     (info + ... + infos);
     init(info);
   };
+#endif
 
   bool init(PvHeadlessSurfaceCreateInfoEXT &info);
 

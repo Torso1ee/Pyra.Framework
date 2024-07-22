@@ -1,5 +1,5 @@
 #include "core/GlslCompiler.h"
-#include <spirv/spirv.hpp>
+#include <spirv/1.2/spirv.hpp>
 
 namespace Pyra {
 
