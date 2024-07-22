@@ -1,6 +1,7 @@
 #pragma once
 #include <spdlog/logger.h>
 #include <string>
+#include <sstream>
 
 namespace Pyra {
 
@@ -25,7 +26,7 @@ private:
 #define INFO(...) Logger::get()->info(__VA_ARGS__);
 #define WARN(...) Logger::get()->warn(__VA_ARGS__);
 #define ERROR(...)                                                             \
-  Logger::get()->error("[{}:{}]  {}", wcharToString(__FILEW__), __LINE__,      \
+  Logger::get()->error("[{}:{}]  {}", __FILE__, __LINE__,      \
                        __VA_ARGS__);
 #define DEBUG(...) Logger::get()->debug(__VA_ARGS__);
 

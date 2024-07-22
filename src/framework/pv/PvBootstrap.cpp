@@ -10,7 +10,7 @@
 #include "pv/PvShaderModule.h"
 #include "pv/PvSurface.h"
 #include "pv/PvSwapchain.h"
-#include "pv/pvInstance.h"
+#include "pv/PvInstance.h"
 #include "window/GlfwWindow.h"
 #include <memory>
 #include <volk.h>
