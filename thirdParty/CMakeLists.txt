@@ -68,8 +68,6 @@ endif()
 
 set(GLFW_BUILD_WAYLAND OFF)
 
-message(STATUS "hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh ${GLFW_BUILD_WAYLAND}")
-
 if(NOT ANDROID AND NOT IOS)
     if (NOT DIRECT_TO_DISPLAY)
         # GLFW
