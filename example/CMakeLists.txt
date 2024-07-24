@@ -12,6 +12,17 @@ function(make_includable input_file output_file)
     file(WRITE ${output_file} "${content}")
 endfunction(make_includable)
 
+function(make_example target)
+    add_executable(${target} ${target}.cpp)
+
+    target_include_directories(${target}  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+    )
+    target_link_libraries(${target} PUBLIC framework)
+    add_dependencies(${target} CopyResources)
+endfunction(make_example)
+
+
 
 
 set(FOLDER_PATH "shaders")
@@ -43,15 +54,8 @@ endforeach()
 
 add_custom_target(CopyResources ALL DEPENDS ${RESOURCE_FILES})
 
-add_executable(${PROJECT_NAME} triangle.cpp)
-
-target_include_directories(${PROJECT_NAME} PUBLIC
-$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
-)
-
-target_link_libraries(${PROJECT_NAME} PUBLIC framework)
-
-add_dependencies(${PROJECT_NAME} CopyResources)
+make_example(triangle)
+make_example(instancing)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

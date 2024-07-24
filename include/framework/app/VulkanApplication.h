@@ -51,6 +51,8 @@ protected:
 
   virtual void configure();
 
+  virtual void prepareData(){}
+
   virtual void recreateSwapchain();
 
   virtual void getQueue();

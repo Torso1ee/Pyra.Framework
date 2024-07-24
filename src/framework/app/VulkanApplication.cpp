@@ -25,43 +25,14 @@ namespace Pyra
     app->framebufferResized = true;
   }
 
-  VKAPI_ATTR VkBool32 VKAPI_CALL
-  customDebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
-                      VkDebugUtilsMessageTypeFlagsEXT messageType,
-                      const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
-                      void *pUserData)
-  {
-    INFO("validation layer: {}", pCallbackData->pMessage);
-    return VK_TRUE;
-  }
-
   void VulkanApplication::configure() {}
 
   void VulkanApplication::setUpBootstrap()
   {
     bootstrap
-        ->withInstanceBuilder([](auto builder)
-                              { builder.set_debug_callback(customDebugCallback)
-                                    .set_debug_messenger_severity(
-                                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT |
-                                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT |
-                                        VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT)
-                                    .set_debug_messenger_type(
-                                        VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-                                        VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
-                                        VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT)
-                                    .request_validation_layers(); })
-        ->withPhysicalDeviceSelector([](vkb::PhysicalDeviceSelector &builder)
-                                     { 
-                                      builder.add_required_extensions({"VK_EXT_graphics_pipeline_library","VK_KHR_pipeline_library"}); 
-                                      })
-        ->withDeviceBuilder([](auto builder) {})
         ->withWindow()
         ->withSurface()
-        ->withSwapchainBuilder([](auto builder) {
-
-        })
-        ->build();
+        ->withSwapchainBuilder([](auto builder) {});
   }
 
   std::shared_ptr<PvInstance> VulkanApplication::instance(){
@@ -91,6 +62,7 @@ namespace Pyra
   void VulkanApplication::preRun()
   {
     setUpBootstrap();
+    bootstrap->build(true);
     getQueue();
     createRenderPass();
     createPipeline();

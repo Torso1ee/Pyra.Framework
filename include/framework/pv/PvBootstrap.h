@@ -89,7 +89,7 @@ public:
 
   PvBootstrap *withWindow();
 
-  void build();
+  void build(bool validation = true);
 
   template <typename T, typename... T1>
   std::shared_ptr<T> make(CreateInfo<T> info, T1... args) {

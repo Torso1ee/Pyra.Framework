@@ -1,0 +1,5 @@
+namespace Pyra {
+    struct Mesh{
+
+    };
+}
