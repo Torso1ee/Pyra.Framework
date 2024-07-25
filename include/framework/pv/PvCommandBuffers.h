@@ -9,6 +9,7 @@ namespace Pyra {
 
 class PvCommandBuffer;
 class PvCommandBuffers;
+class PvCommandPool;
 struct PvCommandBuffersAllocateInfo;
 
 template <> struct CreateInfo_T<PvCommandBuffers> {
@@ -23,6 +24,7 @@ struct PvCommandBuffersAllocateInfo
   uint32_t commandBufferCount;
 
   friend PvCommandBuffers;
+  friend PvCommandPool;
   friend PvInfo<VkCommandBufferAllocateInfo, PvCommandBuffers>;
 
 private:
@@ -83,6 +85,9 @@ struct PvCommandBuffer {
 
   PvTable *table;
   VkCommandBuffer handle;
+  PvCommandBuffers *parent;
+
+  ~PvCommandBuffer();
 
   PvCommandBuffer &reset(VkCommandBufferResetFlags flag = 0);
 
@@ -107,6 +112,7 @@ class PvCommandBuffers
     : public PvResource<VkCommandBuffer *, PFN_vkFreeCommandBuffers> {
 public:
   bool init(PvCommandBuffersAllocateInfo &info);
+  bool active = false;
 
   template <typename... T>
   PvCommandBuffers(PvCommandBuffersAllocateInfo &info, T... infos) {
@@ -116,7 +122,7 @@ public:
   }
 
   PvCommandBuffer get(uint32_t i) {
-    return {.table = table, .handle = commandBuffers->at(i)};
+    return {.table = table, .handle = commandBuffers->at(i), .parent = this};
   }
 
   size_t size() { return commandBuffers->size(); }

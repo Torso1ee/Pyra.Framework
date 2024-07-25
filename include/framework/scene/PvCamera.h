@@ -11,7 +11,7 @@
 using namespace glm;
 namespace Pyra {
 
-struct Camera {
+struct PvCamera {
 
   mat4 view;
   mat4 proj;
@@ -24,10 +24,10 @@ struct Camera {
   float zNear;
   float zFar;
 
-  Event<Camera *> updated;
+  Event<PvCamera *> updated;
 
   void update();
-  void update(Camera camera);
+  void update(PvCamera camera);
   void pan(vec3);
   void rotate(float, float);
   void zoom(vec2, float);

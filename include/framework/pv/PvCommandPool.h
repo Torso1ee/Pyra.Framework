@@ -1,5 +1,9 @@
 #pragma once
+#include "pv/PvCommandBuffers.h"
 #include "pv/PvResource.h"
+#include "vulkan/vulkan_core.h"
+#include <cstdint>
+#include <memory>
 #include <vector>
 #include <volk.h>
 namespace Pyra {
@@ -29,12 +33,18 @@ class PvCommandPool
 public:
   bool init(PvCommandPoolCreateInfo &info);
 
+  PvCommandBuffer requestCommandBuffer(
+      VkCommandBufferLevel level = VK_COMMAND_BUFFER_LEVEL_PRIMARY);
   template <typename... T>
   PvCommandPool(PvCommandPoolCreateInfo &info, T... infos) {
     info.assign();
     (info + ... + infos);
     init(info);
   }
+
+private:
+  std::vector<std::shared_ptr<PvCommandBuffers>> primaryCommandBuffers;
+  std::vector<std::shared_ptr<PvCommandBuffers>> secondCommandBuffers;
 };
 
 } // namespace Pyra

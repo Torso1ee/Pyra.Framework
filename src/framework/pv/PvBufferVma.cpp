@@ -1,7 +1,7 @@
 #include "pv/PvBufferVma.h"
+#include "core/Core.h"
 #include "pv/PvBootstrap.h"
 #include "pv/PvCommon.h"
-#include "core/Core.h"
 #include <cstdint>
 #include <volk.h>
 
@@ -34,6 +34,28 @@ bool PvBufferVma::init(PvBufferVmaCreateInfo &info) {
          std::make_tuple(info.table->allocator, handle->Buffer, handle->meomry),
          info.operation, {info.table->device.device});
   return true;
+}
+
+void PvBufferVma::flush(VkDeviceSize offset, VkDeviceSize size)
+{
+	if (!coherent)
+	{
+		vmaFlushAllocation(table->allocator, handle->meomry, offset, size);
+	}
+}
+
+size_t PvBufferVma::update(const uint8_t *data, size_t size, size_t offset)
+{
+  if (mappedData !=nullptr) {
+    std::copy(data, data + size, mappedData + offset);
+    flush();
+  } else {
+    map();
+    std::copy(data, data + size, mappedData + offset);
+    flush();
+    unmap();
+  }
+  return size;
 }
 
 } // namespace Pyra

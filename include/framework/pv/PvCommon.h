@@ -73,6 +73,9 @@ template <typename T, typename Derived> struct PvInfo {
   template <typename, typename> friend class PvInfo;
   friend PvBootstrap;
 
+public:
+  void setTable(PvTable *t) { table = t; }
+
 protected:
   T info;
 

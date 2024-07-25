@@ -45,12 +45,19 @@ class PvBufferVma : public PvResource<VkBufferVma *, PFN_vmaDestroyBuffer> {
 public:
   bool init(PvBufferVmaCreateInfo &info);
 
+  size_t update(const uint8_t *data, size_t size, size_t offset);
+
+  void flush(VkDeviceSize offset, VkDeviceSize size);
+
   template <typename... T>
   PvBufferVma(PvBufferVmaCreateInfo &info, T... infos) {
     info.assign();
     (info + ... + infos);
     init(info);
   }
+
+private:
+  uint8_t *mappedData = nullptr;
 };
 
 } // namespace Pyra

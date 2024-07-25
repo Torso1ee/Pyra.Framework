@@ -103,6 +103,10 @@ add_subdirectory(VulkanMemoryAllocator)
 
 add_subdirectory(vk-bootstrap)
 
+add_subdirectory(tinyobjloader)
+
+add_subdirectory(tinygltf)
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)

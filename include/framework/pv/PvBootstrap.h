@@ -1,4 +1,5 @@
 #pragma once
+#include "pv/PvBufferVma.h"
 #include <VkBootstrap.h>
 #include <memory>
 #include <optional>
@@ -104,6 +105,16 @@ public:
 
   std::shared_ptr<PvShaderModule> createShaderModule(const char *code,
                                                      shaderc_shader_kind kind);
+
+  std::shared_ptr<PvBufferVma> createStagingBuffer() {
+    CreateInfo<PvBufferVma> info{
+        .usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+        .allocInfo = {
+            .flags = VMA_ALLOCATION_CREATE_MAPPED_BIT |
+                     VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT}};
+    auto stage_buffer = make<PvBufferVma>(info);
+    return stage_buffer;
+  }
 
   friend VulkanApplication;
 

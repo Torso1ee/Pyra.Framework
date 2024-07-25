@@ -1,4 +1,4 @@
 namespace Pyra {
 
-class Texture {};
+class PvTexture {};
 } // namespace Pyra

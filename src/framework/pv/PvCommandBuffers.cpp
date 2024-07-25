@@ -61,6 +61,8 @@ PvCommandBuffer::beginCommandBuffer(BeginCommandBufferInfo info) {
   return *this;
 }
 
+PvCommandBuffer::~PvCommandBuffer() { parent->active = false; }
+
 PvCommandBuffer &PvCommandBuffer::reset(VkCommandBufferResetFlags flag) {
   table->disp.resetCommandBuffer(handle, flag);
   return *this;

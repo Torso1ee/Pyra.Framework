@@ -14,6 +14,8 @@ app/VulkanApplication.cpp
 core/logging.cpp
 core/GlslCompiler.cpp
 core/VmaUsage.cpp
+core/TinyObjLoaderUsage.cpp
+core/TinyGltfUsage.cpp
 
 pv/PvBootstrap.cpp
 pv/PvResource.cpp
@@ -40,10 +42,11 @@ pv/PvFence.cpp
 pv/PvSemaphore.cpp
 pv/PvQueue.cpp
 
+util/GltfLoader.cpp
 
 window/GlfwWindow.cpp
 window/WindowBase.cpp
-scene/Camera.cpp
+scene/PvCamera.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -51,7 +54,7 @@ ${INCLUDE_DIR}/framework
 $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC glm spdlog glfw shaderc SPIRV-Tools-opt SPIRV vk-bootstrap::vk-bootstrap volk VulkanMemoryAllocator)
+target_link_libraries(${PROJECT_NAME} PUBLIC glm spdlog glfw shaderc SPIRV-Tools-opt SPIRV vk-bootstrap::vk-bootstrap volk VulkanMemoryAllocator tinyobjloader tinygltf)
 
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

@@ -1,5 +1,5 @@
 namespace Pyra {
-    struct Mesh{
+    struct PvMesh{
 
     };
 }

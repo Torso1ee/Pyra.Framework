@@ -1,16 +1,16 @@
-#include "scene/Camera.h"
+#include "scene/PvCamera.h"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
 #include "glm/trigonometric.hpp"
 
 namespace Pyra {
-void Camera::update() {
+void PvCamera::update() {
   view = glm::lookAt(center, lookAt, {0.0f, 0.0f, 1.0f});
   proj = glm::perspective(glm::radians(angle), aspect, zNear, zFar);
   updated.invoke(this);
 }
 
-void Camera::update(Camera cam) {
+void PvCamera::update(PvCamera cam) {
   center = cam.center;
   lookAt = cam.lookAt;
   angle = cam.angle;
@@ -20,7 +20,7 @@ void Camera::update(Camera cam) {
   update();
 }
 
-void Camera::pan(vec3 mov) {
+void PvCamera::pan(vec3 mov) {
   mov.x *= -1;
   auto pInverse = glm::inverse(proj);
   auto trans = glm::inverse(view);
@@ -36,7 +36,7 @@ void Camera::pan(vec3 mov) {
   update();
 }
 
-void Camera::rotate(float xPos, float yPos) {
+void PvCamera::rotate(float xPos, float yPos) {
   vec3 diff = lookAt - center;
   vec3 dir = glm::normalize(diff);
   float x, y, z;
@@ -61,7 +61,7 @@ void Camera::rotate(float xPos, float yPos) {
   update();
 }
 
-void Camera::zoom(vec2 pos, float factor) {
+void PvCamera::zoom(vec2 pos, float factor) {
   pos.y *= -1;
   vec3 diff = lookAt - center;
   vec3 dir = glm::normalize(diff);

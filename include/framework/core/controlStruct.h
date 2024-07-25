@@ -7,6 +7,7 @@ struct Extent {
   uint32_t height;
 };
 
+struct EventArgs {};
 
 struct ResizedEventArgs {
   uint32_t width;

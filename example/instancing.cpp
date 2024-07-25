@@ -6,14 +6,14 @@
 using namespace Pyra;
 
 struct Model {
-  std::unique_ptr<Mesh> mesh;
+  std::unique_ptr<PvMesh> mesh;
   std::shared_ptr<PvPipeline> pipeline;
-  Texture texture;
+  PvTexture texture;
 };
 
 class Instancing : public VulkanApplication {
 
-  std::shared_ptr<Camera> camera;
+  std::shared_ptr<PvCamera> camera;
 
   void prepareData() override {
     initializeCamera();
@@ -23,7 +23,7 @@ class Instancing : public VulkanApplication {
   void setUpData() {}
 
   void initializeCamera() {
-    camera = std::make_shared<Camera>();
+    camera = std::make_shared<PvCamera>();
     // TODO：camera set
   }
 
