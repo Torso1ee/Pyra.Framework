@@ -22,3 +22,9 @@
 [submodule "thirdParty/volk"]
 	path = thirdParty/volk
 	url = https://github.com/zeux/volk
+[submodule "thirdParty/tinyobjloader"]
+	path = thirdParty/tinyobjloader
+	url = https://github.com/tinyobjloader/tinyobjloader.git
+[submodule "thirdParty/tinygltf"]
+	path = thirdParty/tinygltf
+	url = https://github.com/syoyo/tinygltf.git
