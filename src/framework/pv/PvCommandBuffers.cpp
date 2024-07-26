@@ -63,6 +63,14 @@ PvCommandBuffer::beginCommandBuffer(BeginCommandBufferInfo info) {
 
 PvCommandBuffer::~PvCommandBuffer() { parent->active = false; }
 
+PvCommandBuffer &PvCommandBuffer::copyBuffer(VkBuffer src, VkBuffer dst,
+                                             VkDeviceSize size) {
+  VkBufferCopy copy_region = {};
+  copy_region.size = size;
+  vkCmdCopyBuffer(handle, src, dst, 1, &copy_region);
+  return *this;
+}
+
 PvCommandBuffer &PvCommandBuffer::reset(VkCommandBufferResetFlags flag) {
   table->disp.resetCommandBuffer(handle, flag);
   return *this;

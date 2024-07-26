@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <vector>
 #include <volk.h>
+#include <vulkan/vulkan_core.h>
 namespace Pyra {
 
 class PvCommandBuffer;
@@ -88,6 +89,8 @@ struct PvCommandBuffer {
   PvCommandBuffers *parent;
 
   ~PvCommandBuffer();
+
+  PvCommandBuffer &copyBuffer(VkBuffer src, VkBuffer dst, VkDeviceSize size);
 
   PvCommandBuffer &reset(VkCommandBufferResetFlags flag = 0);
 

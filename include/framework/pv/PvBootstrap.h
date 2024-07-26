@@ -90,6 +90,8 @@ public:
 
   PvBootstrap *withWindow();
 
+  void InitVmaAllocationCreateInfo(VmaAllocatorCreateInfo &info);
+
   void build(bool validation = true);
 
   template <typename T, typename... T1>
@@ -106,13 +108,25 @@ public:
   std::shared_ptr<PvShaderModule> createShaderModule(const char *code,
                                                      shaderc_shader_kind kind);
 
-  std::shared_ptr<PvBufferVma> createStagingBuffer() {
+  template <typename T>
+  std::shared_ptr<PvBufferVma> createStagingBuffer(const std::vector<T> &data) {
+    return createStagingBuffer(data.size() * sizeof(T), data.data());
+  }
+
+  template <typename T>
+  std::shared_ptr<PvBufferVma> createStagingBuffer(const T &data) {
+    return createStagingBuffer(sizeof(T), &data);
+  }
+
+  std::shared_ptr<PvBufferVma> createStagingBuffer(VkDeviceSize size,
+                                                   const void *data) {
     CreateInfo<PvBufferVma> info{
         .usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
         .allocInfo = {
             .flags = VMA_ALLOCATION_CREATE_MAPPED_BIT |
                      VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT}};
     auto stage_buffer = make<PvBufferVma>(info);
+    stage_buffer->update(reinterpret_cast<const uint8_t *>(data), size);
     return stage_buffer;
   }
 
@@ -132,6 +146,8 @@ private:
   fp_vmaAllocator_setting vmaAllocator_setting = nullptr;
 
   bool createSwapchain();
+
+  bool isExtensionSupported(const char *ext);
 
   PvTable table;
 };

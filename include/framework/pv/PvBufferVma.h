@@ -44,12 +44,11 @@ using PFN_vmaDestroyBuffer =
 
 class PvBufferVma : public PvResource<VkBufferVma *, PFN_vmaDestroyBuffer> {
 public:
-
   ~PvBufferVma();
 
   bool init(PvBufferVmaCreateInfo &info);
 
-  size_t update(const uint8_t *data, size_t size, size_t offset);
+  size_t update(const uint8_t *data, size_t size, size_t offset = 0);
 
   uint8_t *map();
 
@@ -74,7 +73,6 @@ private:
   void postCreate(VmaAllocationInfo const &allocation_info);
 
   void clear();
-
 };
 
 } // namespace Pyra
