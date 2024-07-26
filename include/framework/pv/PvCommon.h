@@ -3,12 +3,24 @@
 #include <optional>
 #include <set>
 #include <volk.h>
+#include <string>
 namespace Pyra {
 
 #define NULLPTR_IF_EMPTY(vector) vector.size() > 0 ? vector.data() : nullptr
 template <typename T> struct CreateInfo_T {
   using type = T;
 };
+
+const std::string toString(VkResult result);
+
+#define VK_CHECK(x)                                                            \
+  do {                                                                         \
+    VkResult err = x;                                                          \
+    if (err) {                                                                 \
+      ERROR("Detected Vulkan error: {}", toString(err));                       \
+      abort();                                                                 \
+    }                                                                          \
+  } while (0)
 
 struct PvPlaceHolder {};
 

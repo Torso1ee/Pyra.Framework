@@ -18,6 +18,7 @@ core/TinyObjLoaderUsage.cpp
 core/TinyGltfUsage.cpp
 
 pv/PvBootstrap.cpp
+pv/PvCommon.cpp
 pv/PvResource.cpp
 pv/PvSwapchain.cpp
 pv/PvInstance.cpp

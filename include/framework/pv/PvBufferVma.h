@@ -1,4 +1,5 @@
 #pragma once
+#include "vulkan/vulkan_core.h"
 #define NOGDI
 #include "pv/PvResource.h"
 #include "vk_mem_alloc.h"
@@ -9,8 +10,8 @@
 namespace Pyra {
 
 struct VkBufferVma {
-  VkBuffer Buffer;
-  VmaAllocation meomry;
+  VkBuffer buffer;
+  VmaAllocation memory;
 };
 
 class PvBufferVma;
@@ -43,11 +44,20 @@ using PFN_vmaDestroyBuffer =
 
 class PvBufferVma : public PvResource<VkBufferVma *, PFN_vmaDestroyBuffer> {
 public:
+
+  ~PvBufferVma();
+
   bool init(PvBufferVmaCreateInfo &info);
 
   size_t update(const uint8_t *data, size_t size, size_t offset);
 
-  void flush(VkDeviceSize offset, VkDeviceSize size);
+  uint8_t *map();
+
+  void flush(VkDeviceSize offset = 0, VkDeviceSize size = VK_WHOLE_SIZE);
+
+  void unmap();
+
+  bool mapped() const;
 
   template <typename... T>
   PvBufferVma(PvBufferVmaCreateInfo &info, T... infos) {
@@ -58,6 +68,13 @@ public:
 
 private:
   uint8_t *mappedData = nullptr;
+  bool persistent;
+  bool coherent;
+
+  void postCreate(VmaAllocationInfo const &allocation_info);
+
+  void clear();
+
 };
 
 } // namespace Pyra

@@ -22,4 +22,6 @@ std::shared_ptr<spdlog::logger> Logger::get() {
   }
   return logger;
 }
+
+
 } // namespace Pyra

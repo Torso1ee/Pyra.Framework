@@ -1,7 +1,7 @@
 #pragma once
 #include <spdlog/logger.h>
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace Pyra {
 
@@ -13,6 +13,7 @@ template <typename ptr> std::string printPointer(ptr p) {
   auto addressStr = oss.str();
   return addressStr;
 }
+
 
 class Logger {
 
@@ -26,8 +27,9 @@ private:
 #define INFO(...) Logger::get()->info(__VA_ARGS__);
 #define WARN(...) Logger::get()->warn(__VA_ARGS__);
 #define ERROR(...)                                                             \
-  Logger::get()->error("[{}:{}]  {}", __FILE__, __LINE__,      \
-                       __VA_ARGS__);
+  Logger::get()->error("[{}:{}]  {}", __FILE__, __LINE__, __VA_ARGS__);
 #define DEBUG(...) Logger::get()->debug(__VA_ARGS__);
+
+
 
 } // namespace Pyra
