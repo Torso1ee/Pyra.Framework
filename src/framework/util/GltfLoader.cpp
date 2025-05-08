@@ -426,10 +426,10 @@ std::unique_ptr<PvMesh> GltfLoader::loadModel(uint32_t index,
       bootstrap->make<PvFence>({.flags = VK_FENCE_CREATE_SIGNALED_BIT});
 
   SubmitInfo sInfo{
-      .fence = fence->handle,
-      .submitInfos = {
+     .submitInfos = {
         {}
-      }
+      },
+      .fence = fence->handle,
   };
   queue->submit(sInfo);
 

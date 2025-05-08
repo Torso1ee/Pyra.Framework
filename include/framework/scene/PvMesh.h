@@ -21,11 +21,11 @@ struct VertexAttribute {
 
 class PvMesh {
 public:
-  PvMesh(const std::string &name = {});
+  PvMesh(){}
 
   virtual ~PvMesh() = default;
 
-  virtual std::type_index get_type();
+  virtual std::type_index get_type(){}
 
   VkIndexType index_type{};
 
